@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="SOULI MATHIEU — Développeur Web et Géomaticien. Portfolio professionnel Vue.js, QGIS, SIG."/>
+<title>SOULI MATHIEU — Dev Web & Géomaticien</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-0:#020b14;--bg-1:#050d1a;--bg-2:#081422;--bg-3:#0d1d30;
+  --surface:#0a1628;--surface-2:#0f1f35;--surface-3:#162840;
+  --cyan:#00d4ff;--cyan-dim:rgba(0,212,255,0.1);--cyan-glow:rgba(0,212,255,0.22);--cyan-l:#4de8ff;
+  --blue:#1e6fff;--blue-l:#4da8da;--blue-mid:#0d3a6e;
+  --gold:#f0a500;--gold-dim:rgba(240,165,0,0.1);
+  --green:#00ff88;
+  --text:#e8f4fd;--text-2:#7ba3c8;--text-3:#3a5570;
+  --border:rgba(0,212,255,0.07);--border-2:rgba(0,212,255,0.16);--border-3:rgba(0,212,255,0.35);
+  --font:'Outfit',sans-serif;--font-tech:'Rajdhani',sans-serif;--font-mono:'JetBrains Mono',monospace;
+  --nav-h:68px;--max-w:1240px;--ease:cubic-bezier(0.16,1,0.3,1);
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--bg-0);color:var(--text);font-family:var(--font);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg-1)}::-webkit-scrollbar-thumb{background:var(--cyan);border-radius:2px}
+::selection{background:var(--cyan-dim);color:var(--cyan)}
+h1{font-family:var(--font-tech);font-size:clamp(3rem,8vw,7rem);font-weight:700;line-height:.95;letter-spacing:-.02em}
+h2{font-family:var(--font-tech);font-size:clamp(1.8rem,4vw,3.2rem);font-weight:600;line-height:1.05}
+h3{font-family:var(--font-tech);font-size:clamp(1.1rem,2vw,1.5rem);font-weight:600}
+p{color:var(--text-2);font-size:.95rem;line-height:1.8}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--font-mono)}
+.container{max-width:var(--max-w);margin:0 auto;padding:0 2rem}
+section{padding:7rem 0;position:relative;overflow:hidden}
+@media(max-width:768px){section{padding:5rem 0}.container{padding:0 1.25rem}}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 30px;font-family:var(--font-tech);font-size:.88rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:all .3s var(--ease);position:relative;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--blue));color:var(--bg-0)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px var(--cyan-glow),0 0 0 1px var(--cyan);filter:brightness(1.1)}
+.btn-outline{background:transparent;color:var(--cyan);border:1px solid var(--border-2)}
+.btn-outline:hover{border-color:var(--cyan);background:var(--cyan-dim);box-shadow:0 0 20px var(--cyan-dim)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+/* Tags */
+.tag{display:inline-flex;align-items:center;padding:3px 10px;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.08em;border:1px solid var(--border-2);color:var(--cyan);background:var(--cyan-dim);clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px))}
+
+/* Section label */
+.section-label{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:1.25rem}
+.section-label::before{content:'';display:block;width:28px;height:1px;background:var(--cyan)}
+.section-label::after{content:'';display:block;width:5px;height:5px;border:1px solid var(--cyan);transform:rotate(45deg);flex-shrink:0}
+
+/* Geo card */
+.geo-card{background:var(--surface);border:1px solid var(--border);position:relative;padding:2rem;transition:border-color .3s,transform .3s,box-shadow .3s;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
+.geo-card::before{content:'';position:absolute;top:0;left:0;width:50px;height:2px;background:linear-gradient(90deg,var(--cyan),transparent)}
+.geo-card::after{content:'';position:absolute;top:0;left:0;width:2px;height:50px;background:linear-gradient(180deg,var(--cyan),transparent)}
+.geo-card:hover{border-color:var(--border-3);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,212,255,.07)}
+
+/* Divider */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-2),transparent)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes glow-pulse{0%,100%{box-shadow:0 0 8px var(--cyan-glow)}50%{box-shadow:0 0 28px var(--cyan-glow),0 0 56px rgba(0,212,255,.08)}}
+@keyframes rotate-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes radar-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes scan{0%{transform:translateY(0);opacity:.6}100%{transform:translateY(100vh);opacity:0}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes float{0%,100%{transform:translateY(0) translateX(0)}33%{transform:translateY(-8px) translateX(4px)}66%{transform:translateY(4px) translateX(-3px)}}
+@keyframes ping{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.5);opacity:0}}
+@keyframes grid-move{from{background-position:0 0}to{background-position:48px 48px}}
+@keyframes shimmer{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}
+
+/* ============================================================ NAVBAR ============================================================ */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+.navbar.scrolled{background:rgba(2,11,20,.94);border-bottom-color:var(--border);backdrop-filter:blur(20px)}
+.nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 2rem;height:100%;display:flex;align-items:center;gap:2rem}
+.nav-logo{display:flex;align-items:center;gap:12px;margin-right:auto}
+.nav-logo-mark{position:relative;width:36px;height:36px;flex-shrink:0}
+.nav-logo-mark svg{position:absolute;inset:0;animation:rotate-slow 8s linear infinite}
+.nav-logo-inner{position:absolute;inset:6px;background:var(--cyan-dim);border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-tech);font-size:.75rem;font-weight:700;color:var(--cyan)}
+.nav-logo-text{display:flex;flex-direction:column}
+.nav-logo-name{font-family:var(--font-tech);font-size:1rem;font-weight:700;color:var(--text);letter-spacing:.05em}
+.nav-logo-sub{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase}
+.nav-links{display:flex;list-style:none;gap:2px}
+.nav-link{display:flex;align-items:center;gap:5px;padding:7px 14px;font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2);transition:all .2s;position:relative}
+.nav-link .num{font-size:.55rem;color:var(--cyan);opacity:.5}
+.nav-link::after{content:'';position:absolute;bottom:4px;left:14px;right:14px;height:1px;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+.nav-link:hover,.nav-link.active{color:var(--text)}
+.nav-link:hover::after,.nav-link.active::after{transform:scaleX(1)}
+.nav-cta{font-size:.65rem!important;padding:9px 20px!important}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.burger span{display:block;height:1px;width:22px;background:var(--text);transition:all .3s}
+.menu-open .burger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.menu-open .burger span:nth-child(2){opacity:0;transform:scaleX(0)}
+.menu-open .burger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.mobile-menu{display:none;position:absolute;top:var(--nav-h);left:0;right:0;background:rgba(2,11,20,.98);border-bottom:1px solid var(--border);padding:2rem;backdrop-filter:blur(20px)}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:block;padding:.9rem 0;border-bottom:1px solid var(--border);font-family:var(--font-tech);font-size:1.3rem;font-weight:500;color:var(--text);transition:color .2s,padding-left .2s}
+.mobile-menu a:hover{color:var(--cyan);padding-left:12px}
+@media(max-width:900px){.nav-links,.nav-cta{display:none!important}.burger{display:flex}}
+
+/* ============================================================ HERO ============================================================ */
+#hero{min-height:100vh;display:flex;align-items:center;padding-top:var(--nav-h);position:relative;background:var(--bg-0)}
+.hero-map-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+.hero-map-bg img{width:100%;height:100%;object-fit:cover;opacity:.12;filter:saturate(.2) hue-rotate(180deg) brightness(.6)}
+.hero-map-leaf{position:absolute;inset:0;z-index:1;opacity:.2;pointer-events:none}
+.hero-map-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(135deg,rgba(2,11,20,.9) 0%,rgba(2,11,20,.6) 60%,rgba(2,11,20,.9) 100%);pointer-events:none}
+.hero-grid-anim{position:absolute;inset:0;z-index:3;background-image:linear-gradient(rgba(0,212,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.04) 1px,transparent 1px);background-size:48px 48px;animation:grid-move 4s linear infinite;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);pointer-events:none}
+.hero-scanline{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan-dim),transparent);animation:scan 6s linear infinite;pointer-events:none;z-index:3}
+
+/* Radar */
+.radar-wrap{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:400px;height:400px;opacity:.3;pointer-events:none;z-index:4}
+@media(max-width:1100px){.radar-wrap{display:none}}
+.radar-c{position:absolute;inset:0;border:1px solid var(--border-2);border-radius:50%}
+.radar-c:nth-child(2){inset:20%;opacity:.6}
+.radar-c:nth-child(3){inset:40%;opacity:.4}
+.radar-c:nth-child(4){inset:60%;opacity:.3}
+.radar-sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 75%,rgba(0,212,255,.3) 100%);animation:radar-spin 4s linear infinite}
+.radar-cross{position:absolute;inset:0}
+.radar-cross::before{content:'';position:absolute;width:100%;height:1px;top:50%;background:var(--border);transform:translateY(-50%)}
+.radar-cross::after{content:'';position:absolute;width:1px;height:100%;left:50%;background:var(--border);transform:translateX(-50%)}
+.rdot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.rdot::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:var(--cyan);animation:ping 2s ease-out infinite}
+.rdot-1{top:28%;left:60%}.rdot-2{top:55%;left:32%}.rdot-3{top:68%;left:64%}
+.rdot-2::after{animation-delay:.5s}.rdot-3::after{animation-delay:1s}
+
+/* Drone & satellite decorative */
+.deco-drone{position:absolute;left:2%;bottom:10%;z-index:4;opacity:.22;pointer-events:none;animation:float 7s ease-in-out infinite}
+.deco-sat{position:absolute;right:2%;bottom:14%;z-index:4;opacity:.18;pointer-events:none;animation:float 9s ease-in-out infinite 2s}
+.deco-img{object-fit:cover;filter:saturate(.3) brightness(.65) hue-rotate(185deg)}
+.deco-label{font-family:var(--font-mono);font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);opacity:.7;margin-top:5px;text-align:center}
+
+/* GPS particles */
+.particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:4}
+.particle{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--cyan);animation:float var(--dur,6s) ease-in-out infinite var(--delay,0s)}
+
+.hero-content{position:relative;z-index:5;padding:4rem 0 6rem}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:2rem;animation:fadeUp .6s .2s both}
+.hero-eyebrow-line{width:40px;height:1px;background:var(--cyan)}
+.hero-eyebrow-text{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan)}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:glow-pulse 2s ease-in-out infinite}
+.hero-name{animation:fadeUp .8s .35s both;margin-bottom:.5rem}
+.hero-name .line1{display:block;color:var(--text-2);font-weight:300;font-style:italic;font-size:.6em}
+.hero-name .line2{display:block;color:var(--text);background:linear-gradient(135deg,var(--text) 40%,var(--cyan-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-title-bar{display:flex;align-items:center;gap:14px;margin-bottom:2rem;animation:fadeUp .8s .5s both}
+.title-bracket{font-family:var(--font-mono);font-size:1rem;color:var(--cyan);opacity:.5}
+.hero-title-txt{font-family:var(--font-tech);font-size:1.1rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--text-2)}
+.hero-cursor{display:inline-block;width:2px;height:1.1em;background:var(--cyan);vertical-align:middle;margin-left:3px;animation:blink 1s step-end infinite}
+.hero-tagline{max-width:520px;font-size:1rem;color:var(--text-2);margin-bottom:2.5rem;line-height:1.85;animation:fadeUp .8s .65s both}
+.hero-coords{display:flex;gap:2rem;margin-bottom:2.5rem;animation:fadeUp .8s .75s both;flex-wrap:wrap}
+.coord-item{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.65rem;letter-spacing:.08em;color:var(--text-3)}
+.coord-sep{color:var(--text-3)}
+.coord-val{color:var(--cyan);opacity:.85}
+.hero-stack{display:flex;align-items:center;gap:.75rem;margin-bottom:3rem;flex-wrap:wrap;animation:fadeUp .8s .85s both}
+.stack-sep{font-family:var(--font-mono);font-size:.7rem;color:var(--text-3)}
+.hero-actions{display:flex;gap:1rem;margin-bottom:5rem;flex-wrap:wrap;animation:fadeUp .8s .95s both}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border-top:1px solid var(--border);padding-top:3rem;animation:fadeUp .8s 1.1s both}
+@media(max-width:640px){.hero-stats{grid-template-columns:repeat(2,1fr);gap:1.5rem}}
+.stat-item{padding:0 1.5rem 0 0}
+.stat-item:not(:last-child){border-right:1px solid var(--border)}
+@media(max-width:640px){.stat-item{border-right:none!important;padding:0}}
+.stat-value{font-family:var(--font-tech);font-size:2.8rem;font-weight:700;line-height:1;color:var(--cyan);display:block}
+.stat-suffix{font-size:2rem}
+.stat-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);display:block;margin-top:4px}
+.stat-bar{width:32px;height:2px;background:var(--surface-3);margin-top:8px;overflow:hidden}
+.stat-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width 1.4s var(--ease)}
+
+/* ============================================================ ABOUT ============================================================ */
+#about{background:linear-gradient(180deg,var(--bg-0) 0%,var(--bg-1) 100%)}
+.about-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;opacity:.5}
+.about-grid{display:grid;grid-template-columns:1fr 380px;gap:5rem;align-items:start}
+@media(max-width:1024px){.about-grid{grid-template-columns:1fr;gap:3rem}}
+.about-heading{margin:1rem 0 1.75rem;color:var(--text)}
+.about-heading em{font-style:normal;color:var(--cyan)}
+.about-bio{font-size:1rem;line-height:1.9;margin-bottom:2.5rem}
+.about-meta{display:flex;flex-direction:column;gap:8px;margin-bottom:2.5rem}
+.meta-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);font-size:.85rem;color:var(--text-2);transition:border-color .2s}
+.meta-row:hover{border-color:var(--border-2)}
+.meta-icon{color:var(--cyan);display:flex;align-items:center;flex-shrink:0;width:16px}
+.meta-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);width:90px;flex-shrink:0}
+.about-socials{display:flex;gap:10px;flex-wrap:wrap}
+.social-link{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--border-2);font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;color:var(--text-2);transition:all .3s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+.social-link:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+
+/* ID Card */
+.id-card{background:var(--surface);border:1px solid var(--border-2);overflow:hidden;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px))}
+.id-card-header{background:linear-gradient(135deg,var(--blue-mid),var(--surface-3));padding:1.5rem;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.id-card-header::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.05) 1px,transparent 1px);background-size:20px 20px}
+.id-logo{position:relative;z-index:1;display:flex;align-items:center;gap:14px}
+.id-avatar{width:64px;height:64px;border:2px solid var(--cyan);background:var(--cyan-dim);display:flex;align-items:center;justify-content:center;font-family:var(--font-tech);font-size:1.4rem;font-weight:700;color:var(--cyan);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));overflow:hidden;cursor:pointer;position:relative}
+.id-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.id-avatar-fb{font-family:var(--font-tech);font-size:1.4rem;font-weight:700;color:var(--cyan)}
+.id-avatar-btn{position:absolute;bottom:0;left:0;right:0;background:rgba(0,212,255,.3);font-family:var(--font-mono);font-size:.5rem;text-align:center;padding:2px;color:var(--bg-0);opacity:0;transition:opacity .2s}
+.id-avatar:hover .id-avatar-btn{opacity:1}
+.id-name-w .id-name{font-family:var(--font-tech);font-size:1.2rem;font-weight:700;color:var(--text)}
+.id-name-w .id-role{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);margin-top:3px}
+.id-body{padding:1.5rem}
+.id-field{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.id-field:last-child{border:none}
+.id-fl{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.id-fv{font-size:.82rem;color:var(--text-2)}
+.id-footer{padding:.75rem 1.5rem;background:rgba(0,212,255,.04);border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.id-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:glow-pulse 2s ease-in-out infinite}
+.id-status{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green)}
+.photo-upload-hint{margin-top:.75rem;padding:.85rem 1.1rem;background:var(--surface);border:1px solid var(--border-2);display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .2s}
+.photo-upload-hint:hover{border-color:var(--cyan)}
+.photo-upload-hint-icon{width:30px;height:30px;background:var(--cyan-dim);border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;color:var(--cyan);flex-shrink:0;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px))}
+.photo-upload-hint-text{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.photo-upload-hint-cta{font-family:var(--font-mono);font-size:.68rem;color:var(--cyan);margin-top:2px}
+.geo-coord-card{margin-top:.75rem;padding:.85rem 1.1rem;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:12px}
+
+/* ============================================================ SKILLS ============================================================ */
+#skills{background:var(--bg-1)}
+.skills-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.skills-intro{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-bottom:4rem;align-items:end}
+@media(max-width:768px){.skills-intro{grid-template-columns:1fr;gap:2rem}}
+.skills-intro h2{color:var(--text)}.skills-intro h2 em{font-style:normal;color:var(--cyan)}
+.skills-intro p{border-top:1px solid var(--border);padding-top:1rem}
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:3rem}
+@media(max-width:900px){.skills-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.skills-grid{grid-template-columns:1fr}}
+.skill-cat-head{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.skill-cat-icon{font-size:1rem;width:34px;height:34px;background:var(--cyan-dim);border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))}
+.skill-cat-name{font-family:var(--font-tech);font-size:.78rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--text)}
+.skill-item{margin-bottom:1.1rem}
+.skill-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.skill-name{font-size:.85rem;color:var(--text-2)}
+.skill-pct{font-family:var(--font-mono);font-size:.6rem;color:var(--cyan);letter-spacing:.08em}
+.skill-track{height:3px;background:var(--surface-3);position:relative;overflow:hidden}
+.skill-fill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width 1.2s var(--ease);position:relative}
+.skill-fill.go{width:var(--w)}
+.skill-fill::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.tools-strip{display:flex;align-items:center;gap:1.5rem;padding:1.5rem 2rem;border:1px solid var(--border);background:var(--surface);flex-wrap:wrap}
+.tools-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-3);white-space:nowrap}
+.tools-list{display:flex;flex-wrap:wrap;gap:8px}
+
+/* ============================================================ PROJECTS ============================================================ */
+#projects{background:var(--bg-0)}
+.projects-header{margin-bottom:3.5rem}
+.projects-header h2{color:var(--text)}.projects-header h2 em{font-style:normal;color:var(--cyan)}
+.project-card{display:grid;grid-template-columns:52px 1fr;background:var(--surface);border:1px solid var(--border);position:relative;overflow:hidden;transition:border-color .3s,transform .3s;margin-bottom:3px}
+.project-card:hover{border-color:var(--border-3);transform:translateX(6px)}
+.project-card.featured{border-left:2px solid var(--cyan)}
+.project-num{display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;color:var(--text-3);border-right:1px solid var(--border);writing-mode:vertical-rl;padding:2rem 0}
+.project-body{padding:2rem}
+.project-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px}
+.project-badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.project-award{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;background:var(--gold-dim);border:1px solid rgba(240,165,0,.3);color:var(--gold);clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))}
+.project-year{font-family:var(--font-mono);font-size:.62rem;color:var(--text-3)}
+.project-links{display:flex;gap:6px}
+.project-link{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--border-2);color:var(--text-2);transition:all .2s;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))}
+.project-link:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.project-content{display:grid;grid-template-columns:170px 1fr;gap:2rem;align-items:start}
+@media(max-width:700px){.project-content{grid-template-columns:1fr}.project-num{display:none}}
+.project-visual{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--surface-2);border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));position:relative;overflow:hidden;cursor:pointer}
+.project-visual::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.04) 1px,transparent 1px);background-size:16px 16px;z-index:0}
+.project-visual .proj-emoji{position:relative;z-index:1}
+.project-visual .proj-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;opacity:.85}
+.proj-add-btn{position:absolute;bottom:6px;right:6px;background:var(--cyan-dim);border:1px solid var(--border-2);padding:3px 8px;font-family:var(--font-mono);font-size:.52rem;color:var(--cyan);letter-spacing:.08em;z-index:3}
+.project-subtitle{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);opacity:.7;margin-bottom:6px}
+.project-title{font-family:var(--font-tech);font-size:clamp(1.3rem,2.5vw,1.9rem);font-weight:600;color:var(--text);margin-bottom:.9rem;line-height:1.15}
+.project-desc{font-size:.88rem;line-height:1.75;margin-bottom:1.25rem}
+.project-tech{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.project-url-row{display:flex;gap:8px;flex-wrap:wrap}
+.project-url-inp{flex:1;min-width:130px;background:var(--bg-3);border:1px solid var(--border-2);color:var(--text);padding:7px 10px;font-family:var(--font-mono);font-size:.65rem;outline:none;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));transition:border-color .2s}
+.project-url-inp:focus{border-color:var(--cyan)}
+.project-url-inp::placeholder{color:var(--text-3)}
+.project-accent{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),transparent);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.project-card:hover .project-accent{transform:scaleX(1)}
+
+/* ============================================================ EXPERIENCE ============================================================ */
+#experience{background:linear-gradient(180deg,var(--bg-1) 0%,var(--bg-0) 100%)}
+.exp-intro{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:4rem}
+@media(max-width:768px){.exp-intro{grid-template-columns:1fr;gap:2rem}}
+.exp-intro h2{color:var(--text)}.exp-intro h2 em{font-style:normal;color:var(--cyan)}
+.exp-intro p{border-top:1px solid var(--border);padding-top:1rem}
+.timeline{display:flex;flex-direction:column}
+.tl-item{display:grid;grid-template-columns:44px 1fr;gap:0 1.5rem}
+.tl-connector{display:flex;flex-direction:column;align-items:center;padding-top:1.25rem}
+.tl-dot{width:20px;height:20px;border:1px solid var(--border-2);background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.tl-item:hover .tl-dot{background:var(--cyan-dim);border-color:var(--cyan)}
+.tl-item.highlight .tl-dot{background:var(--cyan-dim);border-color:var(--cyan);box-shadow:0 0 12px var(--cyan-dim)}
+.tl-dot-inner{width:6px;height:6px;background:var(--text-3);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);transition:background .3s}
+.tl-item:hover .tl-dot-inner,.tl-item.highlight .tl-dot-inner{background:var(--cyan)}
+.tl-line{flex:1;width:1px;background:var(--border);min-height:1.5rem;margin:4px 0}
+.tl-card{padding:1.25rem 1.5rem;margin-bottom:.75rem;border:1px solid var(--border);background:var(--surface);transition:border-color .3s,transform .3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.tl-card:hover{border-color:var(--border-2);transform:translateX(4px)}
+.tl-item.highlight .tl-card{border-left:2px solid var(--cyan)}
+.tl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;flex-wrap:wrap;gap:8px}
+.tl-period{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;color:var(--text-3)}
+.tl-badge{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border:1px solid;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px))}
+.badge-education{color:var(--blue-l);border-color:rgba(77,168,218,.3);background:rgba(77,168,218,.06)}
+.badge-achievement{color:var(--gold);border-color:rgba(240,165,0,.3);background:var(--gold-dim)}
+.badge-certification{color:#4adb7a;border-color:rgba(74,219,122,.3);background:rgba(74,219,122,.06)}
+.badge-work{color:#c87dd4;border-color:rgba(200,125,212,.3);background:rgba(200,125,212,.06)}
+.tl-title{font-family:var(--font-tech);font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:.4rem}
+.tl-org{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--text-2);margin-bottom:.6rem;flex-wrap:wrap}
+.tl-sep{color:var(--text-3)}
+.tl-loc{color:var(--text-3);font-size:.75rem}
+.tl-desc{font-size:.85rem;line-height:1.7;margin-bottom:.75rem}
+.tl-tags{display:flex;flex-wrap:wrap;gap:5px}
+.cv-cta{border:1px solid var(--border-2);background:var(--surface);clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));margin-top:2rem}
+.cv-cta-inner{display:flex;align-items:center;justify-content:space-between;padding:2rem;gap:2rem;flex-wrap:wrap}
+.cv-cta-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);margin-bottom:4px}
+.cv-cta-text{font-size:.95rem;color:var(--text-2)}
+
+/* ============================================================ CONTACT ============================================================ */
+#contact{background:var(--bg-1)}
+.contact-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;opacity:.5}
+.contact-photo-banner{display:flex;align-items:center;gap:2rem;margin-bottom:3rem;padding:1.5rem 2rem;background:var(--surface);border:1px solid var(--border-2);clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+.contact-photo-wrap{position:relative;flex-shrink:0}
+.contact-avatar{width:88px;height:88px;border:2px solid var(--cyan);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));overflow:hidden;background:var(--cyan-dim);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.contact-avatar img{width:100%;height:100%;object-fit:cover;display:none}
+.contact-avatar-fb{font-family:var(--font-tech);font-size:2rem;font-weight:700;color:var(--cyan)}
+.contact-avatar-add{position:absolute;bottom:-4px;right:-4px;width:20px;height:20px;background:var(--cyan);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.contact-info-name{font-family:var(--font-tech);font-size:1.3rem;font-weight:700;color:var(--text)}
+.contact-info-role{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);margin-top:4px}
+.contact-info-status{display:flex;align-items:center;gap:8px;margin-top:10px}
+.contact-status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.contact-status-txt{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green)}
+.contact-photo-hint{font-family:var(--font-mono);font-size:.58rem;color:var(--text-3);margin-top:8px}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+@media(max-width:900px){.contact-grid{grid-template-columns:1fr}}
+.contact-heading{margin:1rem 0 1.5rem;color:var(--text)}.contact-heading em{font-style:normal;color:var(--cyan)}
+.contact-text{margin-bottom:2.5rem;line-height:1.85}
+.contact-detail{display:flex;align-items:center;gap:12px;padding:.9rem 1.1rem;border:1px solid var(--border);background:var(--surface);margin-bottom:.6rem;transition:border-color .2s,transform .2s;text-decoration:none;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+a.contact-detail:hover{border-color:var(--cyan);transform:translateX(4px)}
+.detail-ico{width:32px;height:32px;background:var(--cyan-dim);border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;color:var(--cyan);flex-shrink:0;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px))}
+.detail-lbl{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)}
+.detail-val{font-size:.88rem;color:var(--text-2);margin-top:2px}
+.contact-socials{display:flex;gap:8px;margin-top:1.5rem;flex-wrap:wrap}
+.csoc{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border:1px solid var(--border-2);font-family:var(--font-mono);font-size:.62rem;letter-spacing:.08em;color:var(--text-2);transition:all .3s;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px))}
+.csoc:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.contact-form-wrap{background:var(--surface);border:1px solid var(--border-2);clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));overflow:hidden}
+.form-deco{height:2px;background:linear-gradient(90deg,var(--cyan),var(--blue),transparent)}
+.contact-form{padding:2rem;display:flex;flex-direction:column;gap:1.25rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-lbl{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);transition:color .2s}
+.form-group:focus-within .form-lbl{color:var(--cyan)}
+.form-inp,.form-ta{background:var(--bg-3);border:1px solid var(--border);color:var(--text);padding:10px 14px;font-family:var(--font);font-size:.9rem;outline:none;width:100%;transition:border-color .2s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+.form-inp::placeholder,.form-ta::placeholder{color:var(--text-3)}
+.form-inp:focus,.form-ta:focus{border-color:var(--cyan);background:rgba(0,212,255,.03)}
+.form-ta{resize:none;min-height:130px}
+.form-submit{width:100%;justify-content:center;padding:14px!important}
+.form-err{font-family:var(--font-mono);font-size:.65rem;color:#ff5555;padding:8px 12px;background:rgba(255,85,85,.07);border:1px solid rgba(255,85,85,.2);display:none}
+.form-success{display:none;align-items:center;gap:10px;padding:12px 14px;background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.2);color:var(--green);font-size:.85rem}
+.btn-spinner{width:14px;height:14px;border:1.5px solid rgba(0,0,0,.2);border-top-color:var(--bg-0);border-radius:50%;animation:spin .6s linear infinite;display:none}
+
+/* ============================================================ FOOTER ============================================================ */
+footer{border-top:1px solid var(--border);background:var(--bg-0);padding:2.5rem 0 1.5rem}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:1.5rem}
+.footer-logo{font-family:var(--font-tech);font-size:1.5rem;font-weight:700;color:var(--text)}
+.footer-logo span{color:var(--cyan)}
+.footer-links{display:flex;gap:1.5rem;flex-wrap:wrap}
+.footer-link{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);transition:color .2s}
+.footer-link:hover{color:var(--cyan)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-top:1px solid var(--border);padding-top:1.25rem}
+.footer-copy,.footer-built{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.08em;color:var(--text-3)}
+
+/* Back to top */
+.back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;background:var(--surface);border:1px solid var(--border-2);color:var(--cyan);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:500;transition:all .3s var(--ease);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));opacity:0;pointer-events:none}
+.back-top.visible{opacity:1;pointer-events:all}
+.back-top:hover{background:var(--cyan);color:var(--bg-0);transform:translateY(-4px);box-shadow:0 8px 24px var(--cyan-glow)}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">
+      <div class="nav-logo-mark">
+        <svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="16" stroke="rgba(0,212,255,0.3)" stroke-width="1" stroke-dasharray="4 4"/></svg>
+        <div class="nav-logo-inner">SM</div>
+      </div>
+      <div class="nav-logo-text">
+        <span class="nav-logo-name">SOULI MATHIEU</span>
+        <span class="nav-logo-sub">Dev Web &amp; Géomaticien</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about"      class="nav-link"><span class="num">01</span> À propos</a></li>
+      <li><a href="#skills"     class="nav-link"><span class="num">02</span> Compétences</a></li>
+      <li><a href="#projects"   class="nav-link"><span class="num">03</span> Projets</a></li>
+      <li><a href="#experience" class="nav-link"><span class="num">04</span> Parcours</a></li>
+      <li><a href="#contact"    class="nav-link"><span class="num">05</span> Contact</a></li>
+    </ul>
+    <a href="#contact" class="btn btn-primary nav-cta">Contact</a>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#about"      onclick="closeMobile()">À propos</a>
+    <a href="#skills"     onclick="closeMobile()">Compétences</a>
+    <a href="#projects"   onclick="closeMobile()">Projets</a>
+    <a href="#experience" onclick="closeMobile()">Parcours</a>
+    <a href="#contact"    onclick="closeMobile()">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- Map background layers -->
+  <div class="hero-map-bg">
+    <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1600&auto=format&fit=crop&q=60" alt="carte"/>
+  </div>
+  <div class="hero-map-leaf" id="map-leaf"></div>
+  <div class="hero-map-overlay"></div>
+  <div class="hero-grid-anim"></div>
+  <div class="hero-scanline"></div>
+
+  <!-- Radar -->
+  <div class="radar-wrap">
+    <div class="radar-c"></div><div class="radar-c"></div><div class="radar-c"></div><div class="radar-c"></div>
+    <div class="radar-sweep"></div>
+    <div class="radar-cross"></div>
+    <div class="rdot rdot-1"><div style="position:absolute;inset:-3px;border-radius:50%;background:var(--cyan);animation:ping 2s ease-out infinite"></div></div>
+    <div class="rdot rdot-2"><div style="position:absolute;inset:-3px;border-radius:50%;background:var(--cyan);animation:ping 2.5s ease-out .5s infinite"></div></div>
+    <div class="rdot rdot-3"><div style="position:absolute;inset:-3px;border-radius:50%;background:var(--cyan);animation:ping 3s ease-out 1s infinite"></div></div>
+  </div>
+
+  <!-- Drone décoratif -->
+  <div class="deco-drone">
+    <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=220&auto=format&fit=crop&q=70" alt="drone" class="deco-img" style="width:160px;height:110px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))"/>
+    <div class="deco-label">UAV · 35.76°N</div>
+  </div>
+
+  <!-- Satellite décoratif -->
+  <div class="deco-sat">
+    <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=200&auto=format&fit=crop&q=70" alt="satellite" class="deco-img" style="width:130px;height:130px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);border:1px solid rgba(0,212,255,0.3)"/>
+    <div class="deco-label">SATELLITE · NDVI</div>
+  </div>
+
+  <!-- GPS particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="container hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span class="hero-eyebrow-text">Portfolio 2026</span>
+      <div class="hero-eyebrow-dot"></div>
+    </div>
+
+    <h1 class="hero-name">
+      <span class="line1">Mathieu</span>
+      <span class="line2">SOULI</span>
+    </h1>
+
+    <div class="hero-title-bar">
+      <span class="title-bracket">[</span>
+      <span class="hero-title-txt" id="typewriter"></span>
+      <span class="hero-cursor"></span>
+      <span class="title-bracket">]</span>
+    </div>
+
+    <p class="hero-tagline">
+      Ingénieur en Géoinformation · Développeur Web Full Stack.<br>
+      Je transforme les données spatiales en expériences digitales.
+    </p>
+
+    <div class="hero-coords">
+      <div class="coord-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span>35.7595° N</span><span class="coord-sep">,</span>
+        <span class="coord-val">5.8340° W — Tanger</span>
+      </div>
+      <div class="coord-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span class="coord-val">Disponible</span>
+        <span class="coord-sep">—</span>
+        <span>Stage / Alternance 2026</span>
+      </div>
+    </div>
+
+    <div class="hero-stack">
+      <span class="tag">Vue.js 3</span><span class="stack-sep">//</span>
+      <span class="tag">JavaScript</span><span class="stack-sep">//</span>
+      <span class="tag">PHP</span><span class="stack-sep">//</span>
+      <span class="tag">MySQL</span><span class="stack-sep">//</span>
+      <span class="tag">QGIS</span><span class="stack-sep">//</span>
+      <span class="tag">SIG</span>
+    </div>
+
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">
+        Voir mes projets
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+      </a>
+      <a href="#contact" class="btn btn-outline">Me contacter</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-value" data-target="3" data-suffix="+">0</span>
+        <span class="stat-label">Projets réalisés</span>
+        <div class="stat-bar"><div class="stat-bar-fill" data-w="75%"></div></div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" data-target="12">0</span>
+        <span class="stat-label">Technologies</span>
+        <div class="stat-bar"><div class="stat-bar-fill" data-w="90%"></div></div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" data-target="1">0</span>
+        <span class="stat-label">Hackathon int'l</span>
+        <div class="stat-bar"><div class="stat-bar-fill" data-w="100%"></div></div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" data-target="2" data-suffix="+">0</span>
+        <span class="stat-label">Certifications</span>
+        <div class="stat-bar"><div class="stat-bar-fill" data-w="60%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-bg"></div>
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <div class="section-label reveal">01 / À Propos</div>
+        <h2 class="about-heading reveal reveal-delay-1">Ingénieur en devenir,<br><em>développeur par passion</em></h2>
+        <p class="about-bio reveal reveal-delay-2">
+          Étudiant ingénieur en Géoinformation à la FST de Tanger, je combine rigueur scientifique et créativité technique pour construire des applications web performantes. Passionné par la cartographie, la data et l'UX, je transforme les données complexes en expériences digitales claires et engageantes.
+        </p>
+        <div class="about-meta reveal reveal-delay-3">
+          <div class="meta-row">
+            <span class="meta-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></span>
+            <span class="meta-label">Localisation</span><span>Tanger, Maroc</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1.13h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.09a16 16 0 006 6z"/></svg></span>
+            <span class="meta-label">Téléphone</span><span>+212 6XX XXX XXX</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+            <span class="meta-label">Email</span><span>souli.mathieu@email.com</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></span>
+            <span class="meta-label">Formation</span><span>FST Tanger — Ingénieur Géoinfo</span>
+          </div>
+        </div>
+        <div class="about-socials reveal reveal-delay-4">
+          <a href="https://github.com/souli-mathieu" target="_blank" class="social-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="https://linkedin.com/in/souli-mathieu" target="_blank" class="social-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <!-- ID Card -->
+      <div class="reveal reveal-delay-2">
+        <div class="id-card">
+          <div class="id-card-header">
+            <div class="id-logo">
+              <div class="id-avatar" onclick="document.getElementById('photo-about').click()" title="Cliquer pour ajouter votre photo">
+                <img id="about-photo-img" alt="SOULI MATHIEU"/>
+                <span class="id-avatar-fb" id="about-avatar-fb">SM</span>
+                <div class="id-avatar-btn">+ Photo</div>
+                <input type="file" id="photo-about" accept="image/*" style="display:none" onchange="uploadPhoto(this,'about')"/>
+              </div>
+              <div class="id-name-w">
+                <div class="id-name">SOULI MATHIEU</div>
+                <div class="id-role">Ingénieur Géoinfo · Dev Web</div>
+              </div>
+            </div>
+          </div>
+          <div class="id-body">
+            <div class="id-field"><span class="id-fl">École</span><span class="id-fv">FST Tanger</span></div>
+            <div class="id-field"><span class="id-fl">Cycle</span><span class="id-fv">Ingénieur Géoinfo</span></div>
+            <div class="id-field"><span class="id-fl">Spécialité</span><span class="id-fv">SIG & Développement</span></div>
+            <div class="id-field"><span class="id-fl">Hackathon</span><span class="id-fv">UNESCO 2026 🏆</span></div>
+            <div class="id-field"><span class="id-fl">Langues</span><span class="id-fv">FR · AR · EN</span></div>
+          </div>
+          <div class="id-footer">
+            <div class="id-dot"></div>
+            <span class="id-status">Disponible pour stage</span>
+          </div>
+        </div>
+        <!-- Upload hint -->
+        <div class="photo-upload-hint" onclick="document.getElementById('photo-about').click()">
+          <div class="photo-upload-hint-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div>
+            <div class="photo-upload-hint-text">Photo de profil</div>
+            <div class="photo-upload-hint-cta">Cliquer sur l'avatar ou ici →</div>
+          </div>
+        </div>
+        <!-- Geo coordinates -->
+        <div class="geo-coord-card">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(0,212,255,0.5)" stroke-width="1">
+            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">Coordonnées SIG</div>
+            <div style="font-family:var(--font-mono);font-size:.72rem;color:var(--cyan);margin-top:3px">35.7595° N · 5.8340° W</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="skills-bg"></div>
+  <div class="container">
+    <div class="skills-intro">
+      <div>
+        <div class="section-label reveal">02 / Compétences</div>
+        <h2 class="reveal reveal-delay-1">Mes <em>outils</em><br>&amp; technologies</h2>
+      </div>
+      <p class="reveal reveal-delay-2">Un ensemble cohérent de technologies web et géospatiales, cultivé au fil de projets académiques, hackathons et certifications professionnelles Esri.</p>
+    </div>
+
+    <div class="skills-grid">
+      <!-- Frontend -->
+      <div class="geo-card reveal">
+        <div class="skill-cat-head">
+          <div class="skill-cat-icon">⬡</div>
+          <span class="skill-cat-name">Frontend</span>
+        </div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">Vue.js 3</span><span class="skill-pct">85%</span></div><div class="skill-track"><div class="skill-fill" style="--w:85%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">JavaScript ES6+</span><span class="skill-pct">80%</span></div><div class="skill-track"><div class="skill-fill" style="--w:80%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">HTML5 / CSS3</span><span class="skill-pct">90%</span></div><div class="skill-track"><div class="skill-fill" style="--w:90%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">Responsive Design</span><span class="skill-pct">85%</span></div><div class="skill-track"><div class="skill-fill" style="--w:85%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">Vite / Build Tools</span><span class="skill-pct">75%</span></div><div class="skill-track"><div class="skill-fill" style="--w:75%"></div></div></div>
+      </div>
+      <!-- Backend -->
+      <div class="geo-card reveal reveal-delay-1">
+        <div class="skill-cat-head">
+          <div class="skill-cat-icon">◈</div>
+          <span class="skill-cat-name">Backend &amp; Data</span>
+        </div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">PHP</span><span class="skill-pct">72%</span></div><div class="skill-track"><div class="skill-fill" style="--w:72%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">MySQL</span><span class="skill-pct">70%</span></div><div class="skill-track"><div class="skill-fill" style="--w:70%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">REST API</span><span class="skill-pct">68%</span></div><div class="skill-track"><div class="skill-fill" style="--w:68%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">Supabase</span><span class="skill-pct">65%</span></div><div class="skill-track"><div class="skill-fill" style="--w:65%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">Python</span><span class="skill-pct">60%</span></div><div class="skill-track"><div class="skill-fill" style="--w:60%"></div></div></div>
+      </div>
+      <!-- Géomatique -->
+      <div class="geo-card reveal reveal-delay-2">
+        <div class="skill-cat-head">
+          <div class="skill-cat-icon">🗺</div>
+          <span class="skill-cat-name">Géomatique SIG</span>
+        </div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">QGIS 3.40</span><span class="skill-pct">78%</span></div><div class="skill-track"><div class="skill-fill" style="--w:78%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">Philcarto</span><span class="skill-pct">80%</span></div><div class="skill-track"><div class="skill-fill" style="--w:80%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">Cartographie thématique</span><span class="skill-pct">82%</span></div><div class="skill-track"><div class="skill-fill" style="--w:82%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">Analyse spatiale</span><span class="skill-pct">72%</span></div><div class="skill-track"><div class="skill-fill" style="--w:72%"></div></div></div>
+        <div class="skill-item"><div class="skill-row"><span class="skill-name">Remote Sensing</span><span class="skill-pct">65%</span></div><div class="skill-track"><div class="skill-fill" style="--w:65%"></div></div></div>
+      </div>
+    </div>
+
+    <div class="tools-strip reveal">
+      <span class="tools-label">Outils</span>
+      <div class="tools-list">
+        <span class="tag">Git / GitHub</span><span class="tag">VS Code</span><span class="tag">Figma</span>
+        <span class="tag">Phildigit</span><span class="tag">Inkscape</span><span class="tag">SRTM</span>
+        <span class="tag">GADM</span><span class="tag">OSM Geofabrik</span><span class="tag">HCP RGPH</span>
+        <span class="tag">Pinia</span><span class="tag">Vue Router</span><span class="tag">Agile / Scrum</span>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="projects-header">
+      <div class="section-label reveal">03 / Projets</div>
+      <h2 class="reveal reveal-delay-1">Travaux<br><em>&amp; Réalisations</em></h2>
+    </div>
+
+    <!-- Project 1 -->
+    <div class="project-card featured reveal">
+      <div class="project-num">01</div>
+      <div class="project-body">
+        <div class="project-top">
+          <div class="project-badges">
+            <span class="project-award">🏆 UNESCO 2026</span>
+            <span class="project-year">Mars 2026</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/souli-mathieu/water-credit-ai" target="_blank" class="project-link" title="GitHub">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="project-content">
+          <div class="project-visual" id="pv1" onclick="document.getElementById('pu1').click()" title="Cliquer pour ajouter une image">
+            <input type="file" id="pu1" accept="image/*" style="display:none" onchange="setProjectImg(this,'pv1','pe1')"/>
+            <span class="proj-emoji" id="pe1">💧</span>
+            <div class="proj-add-btn">+ IMAGE</div>
+          </div>
+          <div>
+            <div class="project-subtitle">Hackathon Water4Future · UNESCO ICIREWARD · Montpellier</div>
+            <h3 class="project-title">Water Credit AI</h3>
+            <p class="project-desc">Système d'allocation durable de l'eau basé sur des crédits échangeables, l'analyse satellite (NDVI/NDWI) et des recommandations agricoles par intelligence artificielle. Développé lors du hackathon UNESCO à Montpellier en équipe "Géoinfo 2".</p>
+            <div class="project-tech">
+              <span class="tag">Python</span><span class="tag">Remote Sensing</span><span class="tag">AI/ML</span><span class="tag">NDVI/NDWI</span><span class="tag">Vue.js</span><span class="tag">Supabase</span>
+            </div>
+            <div class="project-url-row" style="margin-top:1rem">
+              <input type="url" class="project-url-inp" placeholder="🔗 URL GitHub" id="p1-github"/>
+              <input type="url" class="project-url-inp" placeholder="🚀 URL Démo / Live" id="p1-demo"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="project-accent"></div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="project-card featured reveal reveal-delay-1">
+      <div class="project-num">02</div>
+      <div class="project-body">
+        <div class="project-top">
+          <div class="project-badges">
+            <span class="project-year">2025 — 2026</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/souli-mathieu/atlas-casablanca-settat" target="_blank" class="project-link" title="GitHub">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="project-content">
+          <div class="project-visual" id="pv2" onclick="document.getElementById('pu2').click()" title="Cliquer pour ajouter une image">
+            <input type="file" id="pu2" accept="image/*" style="display:none" onchange="setProjectImg(this,'pv2','pe2')"/>
+            <span class="proj-emoji" id="pe2">🗺️</span>
+            <div class="proj-add-btn">+ IMAGE</div>
+          </div>
+          <div>
+            <div class="project-subtitle">Atlas Cartographique · Région Casablanca-Settat · Maroc</div>
+            <h3 class="project-title">Atlas Cartographique</h3>
+            <p class="project-desc">Atlas cartographique complet de la région Casablanca-Settat réalisé avec QGIS 3.40, Philcarto et Phildigit. Visualisation des données démographiques, économiques et sociales du RGPH HCP selon la sémiologie graphique de Bertin. Cartes choroplèthes, cercles proportionnels, diagrammes.</p>
+            <div class="project-tech">
+              <span class="tag">QGIS 3.40</span><span class="tag">Philcarto</span><span class="tag">Phildigit</span><span class="tag">SIG</span><span class="tag">HCP RGPH</span><span class="tag">Cartographie</span>
+            </div>
+            <div class="project-url-row" style="margin-top:1rem">
+              <input type="url" class="project-url-inp" placeholder="🔗 URL GitHub" id="p2-github"/>
+              <input type="url" class="project-url-inp" placeholder="🚀 URL Démo / Live" id="p2-demo"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="project-accent"></div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="project-card reveal reveal-delay-2">
+      <div class="project-num">03</div>
+      <div class="project-body">
+        <div class="project-top">
+          <div class="project-badges"><span class="project-year">2026</span></div>
+          <div class="project-links">
+            <a href="https://github.com/souli-mathieu/portfolio" target="_blank" class="project-link" title="GitHub">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+            <a href="#" class="project-link" title="Demo live">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="project-content">
+          <div class="project-visual" id="pv3" onclick="document.getElementById('pu3').click()" title="Cliquer pour ajouter une image">
+            <input type="file" id="pu3" accept="image/*" style="display:none" onchange="setProjectImg(this,'pv3','pe3')"/>
+            <span class="proj-emoji" id="pe3">⬡</span>
+            <div class="proj-add-btn">+ IMAGE</div>
+          </div>
+          <div>
+            <div class="project-subtitle">Site personnel · Portfolio professionnel · Vue.js + Supabase</div>
+            <h3 class="project-title">Portfolio Interactif</h3>
+            <p class="project-desc">Portfolio professionnel avec backoffice Supabase complet (CRUD projets, compétences, parcours, messages), animations géospatiales, design system custom tech-geo, entièrement responsive et connecté à une base de données en temps réel.</p>
+            <div class="project-tech">
+              <span class="tag">Vue.js 3</span><span class="tag">Pinia</span><span class="tag">Supabase</span><span class="tag">Leaflet.js</span><span class="tag">CSS3</span><span class="tag">Vite</span>
+            </div>
+            <div class="project-url-row" style="margin-top:1rem">
+              <input type="url" class="project-url-inp" placeholder="🔗 URL GitHub" id="p3-github"/>
+              <input type="url" class="project-url-inp" placeholder="🚀 URL Démo / Live" id="p3-demo"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="project-accent"></div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="exp-intro">
+      <div>
+        <div class="section-label reveal">04 / Parcours</div>
+        <h2 class="reveal reveal-delay-1">Formation<br><em>&amp; Expériences</em></h2>
+      </div>
+      <p class="reveal reveal-delay-2">Un parcours mêlant rigueur académique, projets concrets et ouverture internationale — de la CPGE à l'ingénierie géomatique en passant par des hackathons UNESCO.</p>
+    </div>
+
+    <div class="timeline">
+      <!-- Item 1 -->
+      <div class="tl-item highlight reveal">
+        <div class="tl-connector"><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-line"></div></div>
+        <div class="tl-card">
+          <div class="tl-top"><span class="tl-period">2023 — Présent</span><span class="tl-badge badge-education">Formation</span></div>
+          <h3 class="tl-title">Cycle Ingénieur Géoinformation</h3>
+          <div class="tl-org">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>FST Tanger</span><span class="tl-sep">·</span><span class="tl-loc">Tanger, Maroc</span>
+          </div>
+          <p class="tl-desc">Formation d'ingénieur spécialisée en systèmes d'information géographique, cartographie numérique, développement web et analyse spatiale. Travail sous la direction du Professeur MAATOUK, application de la sémiologie graphique de Bertin.</p>
+          <div class="tl-tags"><span class="tag">SIG</span><span class="tag">Cartographie</span><span class="tag">Web Dev</span><span class="tag">Analyse Spatiale</span><span class="tag">Bertin</span></div>
+        </div>
+      </div>
+      <!-- Item 2 -->
+      <div class="tl-item highlight reveal reveal-delay-1">
+        <div class="tl-connector"><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-line"></div></div>
+        <div class="tl-card">
+          <div class="tl-top"><span class="tl-period">Mars 2026</span><span class="tl-badge badge-achievement">Réalisation</span></div>
+          <h3 class="tl-title">Water4Future Hackathon 🏆</h3>
+          <div class="tl-org">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>UNESCO ICIREWARD</span><span class="tl-sep">·</span><span class="tl-loc">Montpellier, France</span>
+          </div>
+          <p class="tl-desc">Développement du projet Water Credit AI — système d'allocation durable de l'eau combinant crédits échangeables, télédétection satellite (NDVI/NDWI) et recommandations agricoles par IA. Équipe "Géoinfo 2" de la FST Tanger.</p>
+          <div class="tl-tags"><span class="tag">Hackathon</span><span class="tag">IA</span><span class="tag">Remote Sensing</span><span class="tag">Innovation</span><span class="tag">UNESCO</span></div>
+        </div>
+      </div>
+      <!-- Item 3 -->
+      <div class="tl-item reveal reveal-delay-2">
+        <div class="tl-connector"><div class="tl-dot"><div class="tl-dot-inner"></div></div><div class="tl-line"></div></div>
+        <div class="tl-card">
+          <div class="tl-top"><span class="tl-period">2025</span><span class="tl-badge badge-certification">Certification</span></div>
+          <h3 class="tl-title">Going Places with Spatial Analysis</h3>
+          <div class="tl-org">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Esri MOOC</span><span class="tl-sep">·</span><span class="tl-loc">En ligne</span>
+          </div>
+          <p class="tl-desc">Certification Esri sur l'analyse spatiale avancée, interpolation, statistiques spatiales et modélisation géographique avec ArcGIS Online.</p>
+          <div class="tl-tags"><span class="tag">Esri</span><span class="tag">ArcGIS</span><span class="tag">Analyse Spatiale</span><span class="tag">MOOC</span></div>
+        </div>
+      </div>
+      <!-- Item 4 -->
+      <div class="tl-item reveal reveal-delay-3">
+        <div class="tl-connector"><div class="tl-dot"><div class="tl-dot-inner"></div></div></div>
+        <div class="tl-card">
+          <div class="tl-top"><span class="tl-period">2020 — 2023</span><span class="tl-badge badge-education">Formation</span></div>
+          <h3 class="tl-title">Classes Préparatoires — CPGE</h3>
+          <div class="tl-org">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Lycée technique</span><span class="tl-sep">·</span><span class="tl-loc">Maroc</span>
+          </div>
+          <p class="tl-desc">Formation scientifique intensive en mathématiques, physique et informatique. Développement de la rigueur analytique et des capacités de résolution de problèmes complexes.</p>
+          <div class="tl-tags"><span class="tag">Mathématiques</span><span class="tag">Physique</span><span class="tag">Algorithmique</span><span class="tag">Rigueur</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-cta reveal">
+      <div class="cv-cta-inner">
+        <div>
+          <div class="cv-cta-label">CV complet</div>
+          <div class="cv-cta-text">Télécharger toutes mes expériences en un document</div>
+        </div>
+        <a href="#" class="btn btn-primary" download>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Télécharger CV
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-bg"></div>
+  <div class="container">
+    <div class="section-label reveal">05 / Contact</div>
+
+    <!-- Photo banner -->
+    <div class="contact-photo-banner reveal reveal-delay-1">
+      <div class="contact-photo-wrap">
+        <div class="contact-avatar" onclick="document.getElementById('photo-contact').click()" title="Cliquer pour changer la photo">
+          <img id="contact-photo-img" alt="SOULI MATHIEU"/>
+          <span class="contact-avatar-fb" id="contact-avatar-fb">SM</span>
+          <input type="file" id="photo-contact" accept="image/*" style="display:none" onchange="uploadPhoto(this,'contact')"/>
+        </div>
+        <div class="contact-avatar-add" onclick="document.getElementById('photo-contact').click()">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--bg-0)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </div>
+      <div>
+        <div class="contact-info-name">SOULI MATHIEU</div>
+        <div class="contact-info-role">Développeur Web · Géomaticien SIG</div>
+        <div class="contact-info-status">
+          <div class="contact-status-dot"></div>
+          <span class="contact-status-txt">Disponible pour stage / alternance 2026</span>
+        </div>
+        <div class="contact-photo-hint">Cliquer sur l'avatar pour ajouter votre photo — se synchronise avec la section À propos</div>
+      </div>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Left -->
+      <div>
+        <h2 class="contact-heading reveal">Travaillons<br><em>ensemble</em></h2>
+        <p class="contact-text reveal reveal-delay-1">Disponible pour des opportunités de stage, alternance ou collaboration sur des projets web et géospatiales. N'hésitez pas à me contacter directement.</p>
+
+        <div class="reveal reveal-delay-2">
+          <a href="mailto:souli.mathieu@email.com" class="contact-detail">
+            <div class="detail-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div><div class="detail-lbl">Email</div><div class="detail-val">souli.mathieu@email.com</div></div>
+          </a>
+          <div class="contact-detail">
+            <div class="detail-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+            <div><div class="detail-lbl">Localisation</div><div class="detail-val">Tanger, Maroc · 35.7595°N 5.8340°W</div></div>
+          </div>
+          <div class="contact-detail">
+            <div class="detail-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+            <div><div class="detail-lbl">Formation</div><div class="detail-val">FST Tanger — Ingénieur Géoinfo</div></div>
+          </div>
+          <div class="contact-detail">
+            <div class="detail-ico"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div><div class="detail-lbl">Disponibilité</div><div class="detail-val">Stage / Alternance 2026 — Immédiat</div></div>
+          </div>
+        </div>
+
+        <div class="contact-socials reveal reveal-delay-3">
+          <a href="https://github.com/souli-mathieu" target="_blank" class="csoc">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="https://linkedin.com/in/souli-mathieu" target="_blank" class="csoc">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div class="contact-form-wrap reveal reveal-delay-2">
+        <div class="form-deco"></div>
+        <div class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-lbl" for="f-name">Nom complet</label>
+              <input type="text" class="form-inp" id="f-name" placeholder="Votre nom"/>
+            </div>
+            <div class="form-group">
+              <label class="form-lbl" for="f-email">Email</label>
+              <input type="email" class="form-inp" id="f-email" placeholder="votre@email.com"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl" for="f-subject">Sujet</label>
+            <input type="text" class="form-inp" id="f-subject" placeholder="Objet de votre message"/>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl" for="f-msg">Message</label>
+            <textarea class="form-ta" id="f-msg" rows="5" placeholder="Décrivez votre projet ou opportunité..."></textarea>
+          </div>
+          <div class="form-err" id="f-err">Veuillez remplir tous les champs.</div>
+          <button class="btn btn-primary form-submit" onclick="submitForm()" id="f-btn">
+            <div class="btn-spinner" id="f-spin"></div>
+            <span id="f-btn-txt">Envoyer le message</span>
+            <svg id="f-btn-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+          <div class="form-success" id="f-success">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Message envoyé ! Je vous répondrai très bientôt.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">SOULI <span>MATHIEU</span></div>
+      <div class="footer-links">
+        <a href="#about"      class="footer-link">À propos</a>
+        <a href="#skills"     class="footer-link">Compétences</a>
+        <a href="#projects"   class="footer-link">Projets</a>
+        <a href="#experience" class="footer-link">Parcours</a>
+        <a href="#contact"    class="footer-link">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 SOULI MATHIEU — Tous droits réservés</span>
+      <span class="footer-built">Construit avec Vue.js 3 + Supabase + Leaflet ⬡</span>
+    </div>
+  </div>
+</footer>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+// ── Navbar ──
+const navbar = document.getElementById('navbar')
+const backTop = document.getElementById('backTop')
+window.addEventListener('scroll', () => {
+  const s = window.scrollY > 50
+  navbar.classList.toggle('scrolled', s)
+  backTop.classList.toggle('visible', window.scrollY > 500)
+  revealElements()
+  updateActiveNav()
+})
+
+// ── Mobile menu ──
+let menuOpen = false
+document.getElementById('burger').addEventListener('click', () => {
+  menuOpen = !menuOpen
+  document.getElementById('mobile-menu').classList.toggle('open', menuOpen)
+  document.querySelector('nav').classList.toggle('menu-open', menuOpen)
+})
+function closeMobile() {
+  menuOpen = false
+  document.getElementById('mobile-menu').classList.remove('open')
+  document.querySelector('nav').classList.remove('menu-open')
+}
+
+// ── Typewriter ──
+const phrases = ['Développeur Web', 'Géomaticien SIG', 'Vue.js Developer', 'Data Visualizer', 'Cartographe Digital']
+let pi = 0, ci = 0, deleting = false
+const tw = document.getElementById('typewriter')
+function typewrite() {
+  const phrase = phrases[pi]
+  tw.textContent = deleting ? phrase.slice(0, --ci) : phrase.slice(0, ++ci)
+  if (!deleting && ci === phrase.length) { setTimeout(() => deleting = true, 1800); setTimeout(typewrite, 2200); return }
+  if (deleting && ci === 0) { deleting = false; pi = (pi + 1) % phrases.length }
+  setTimeout(typewrite, deleting ? 55 : 100)
+}
+setTimeout(typewrite, 900)
+
+// ── GPS Particles ──
+const pw = document.getElementById('particles')
+for (let i = 0; i < 20; i++) {
+  const p = document.createElement('div')
+  p.className = 'particle'
+  p.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${4+Math.random()*6}s;--delay:${Math.random()*5}s;opacity:${.15+Math.random()*.45};width:${Math.random()>.7?3:2}px;height:${Math.random()>.7?3:2}px`
+  pw.appendChild(p)
+}
+
+// ── Leaflet map ──
+setTimeout(() => {
+  try {
+    const map = L.map('map-leaf', {
+      center: [35.7595, 5.8340], zoom: 13,
+      zoomControl: false, scrollWheelZoom: false,
+      dragging: false, touchZoom: false,
+      doubleClickZoom: false, boxZoom: false,
+      keyboard: false, attributionControl: false, interactive: false
+    })
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map)
+    const icon = L.divIcon({
+      html: '<div style="width:10px;height:10px;background:#00d4ff;border:2px solid #fff;border-radius:50%;box-shadow:0 0 12px #00d4ff"></div>',
+      iconSize: [10, 10], className: ''
+    })
+    L.marker([35.7595, 5.8340], { icon }).addTo(map)
+  } catch(e) { console.warn('Map:', e) }
+}, 600)
+
+// ── Stats counter animation ──
+let statsAnimated = false
+function animateStats() {
+  if (statsAnimated) return
+  const el = document.querySelector('.hero-stats')
+  if (!el) return
+  const rect = el.getBoundingClientRect()
+  if (rect.top < window.innerHeight - 80) {
+    statsAnimated = true
+    document.querySelectorAll('.stat-value[data-target]').forEach(el => {
+      const target = +el.dataset.target
+      const suffix = el.dataset.suffix || ''
+      const dur = 1800, start = performance.now()
+      const update = (now) => {
+        const p = Math.min((now - start) / dur, 1)
+        const ease = 1 - Math.pow(1 - p, 4)
+        el.textContent = Math.round(ease * target) + suffix
+        if (p < 1) requestAnimationFrame(update)
+      }
+      requestAnimationFrame(update)
+    })
+    document.querySelectorAll('.stat-bar-fill').forEach((b, i) => {
+      setTimeout(() => b.style.width = b.dataset.w, i * 200)
+    })
+  }
+}
+
+// ── Skill bars ──
+let skillsAnimated = false
+function animateSkills() {
+  if (skillsAnimated) return
+  const sec = document.getElementById('skills')
+  if (!sec) return
+  if (sec.getBoundingClientRect().top < window.innerHeight - 80) {
+    skillsAnimated = true
+    document.querySelectorAll('.skill-fill').forEach((el, i) => {
+      setTimeout(() => el.classList.add('go'), i * 70)
+    })
+  }
+}
+
+// ── Reveal on scroll ──
+function revealElements() {
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+    if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('visible')
+  })
+  animateStats()
+  animateSkills()
+}
+
+// ── Active nav ──
+const navSections = ['hero','about','skills','projects','experience','contact']
+function updateActiveNav() {
+  let current = ''
+  navSections.forEach(id => {
+    const el = document.getElementById(id)
+    if (el && window.scrollY >= el.offsetTop - 130) current = id
+  })
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current)
+  })
+}
+
+// ── Project image upload ──
+function setProjectImg(input, visualId, emojiId) {
+  if (!input.files || !input.files[0]) return
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    const visual = document.getElementById(visualId)
+    document.getElementById(emojiId).style.display = 'none'
+    const old = visual.querySelector('.proj-img')
+    if (old) old.remove()
+    const img = document.createElement('img')
+    img.className = 'proj-img'
+    img.src = e.target.result
+    img.alt = 'Project image'
+    visual.insertBefore(img, visual.querySelector('.proj-add-btn'))
+    const btn = visual.querySelector('.proj-add-btn')
+    if (btn) { btn.textContent = '✓ IMAGE'; btn.style.background = 'rgba(0,212,255,0.2)' }
+  }
+  reader.readAsDataURL(input.files[0])
+}
+
+// ── Photo upload (syncs about + contact) ──
+function uploadPhoto(input, source) {
+  if (!input.files || !input.files[0]) return
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    const src = e.target.result
+    // About
+    const aImg = document.getElementById('about-photo-img')
+    const aFb  = document.getElementById('about-avatar-fb')
+    aImg.src = src; aImg.style.display = 'block'; aFb.style.display = 'none'
+    // Contact
+    const cImg = document.getElementById('contact-photo-img')
+    const cFb  = document.getElementById('contact-avatar-fb')
+    cImg.src = src; cImg.style.display = 'block'; cFb.style.display = 'none'
+  }
+  reader.readAsDataURL(input.files[0])
+}
+
+// ── Contact form ──
+function submitForm() {
+  const name = document.getElementById('f-name').value.trim()
+  const email = document.getElementById('f-email').value.trim()
+  const subject = document.getElementById('f-subject').value.trim()
+  const msg = document.getElementById('f-msg').value.trim()
+  const err = document.getElementById('f-err')
+  err.style.display = 'none'
+  if (!name || !email || !subject || !msg) { err.style.display = 'block'; return }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Email invalide.'; err.style.display = 'block'; return }
+  const btn = document.getElementById('f-btn')
+  const spin = document.getElementById('f-spin')
+  const btntxt = document.getElementById('f-btn-txt')
+  const btnIco = document.getElementById('f-btn-ico')
+  btn.disabled = true; spin.style.display = 'inline-block'; btntxt.textContent = 'Envoi...'; btnIco.style.display = 'none'
+  setTimeout(() => {
+    btn.style.display = 'none'
+    const suc = document.getElementById('f-success')
+    suc.style.display = 'flex'
+    ;['f-name','f-email','f-subject','f-msg'].forEach(id => document.getElementById(id).value = '')
+    setTimeout(() => { suc.style.display = 'none'; btn.style.display = 'flex'; btn.disabled = false; spin.style.display = 'none'; btntxt.textContent = 'Envoyer le message'; btnIco.style.display = '' }, 5000)
+  }, 1200)
+}
+
+// ── Init ──
+setTimeout(revealElements, 200)
+</script>
+</body>
+</html>
