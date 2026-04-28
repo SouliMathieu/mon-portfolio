@@ -20,6 +20,7 @@ const routes = [
       { path: 'skills',  name: 'Skills',      component: () => import('@/views/SkillsView.vue') },
       { path: 'experience', name: 'Experience', component: () => import('@/views/ExperienceView.vue') },
       { path: 'messages',name: 'Messages',    component: () => import('@/views/MessagesView.vue') },
+      { path: 'settings',name: 'Settings',    component: () => import('@/views/SettingsView.vue') },
     ]
   },
   { path: '/:pathMatch(.*)*', redirect: '/' }

@@ -37,9 +37,15 @@ import { useReveal }        from '@/composables/useReveal.js'
 import { usePortfolioData } from '@/composables/usePortfolioData.js'
 
 const { profile, skills, projects, experience, stats, fetchAll } = usePortfolioData()
-onMounted(() => fetchAll())
+const { initReveal } = useReveal()
 
-useReveal()
+onMounted(async () => {
+  await fetchAll()
+  // Attendre la mise à jour du DOM
+  setTimeout(() => {
+    initReveal()
+  }, 200)
+})
 
 const showTop = ref(false)
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
