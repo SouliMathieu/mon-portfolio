@@ -6,17 +6,17 @@ export const profile = {
   name: 'SOULI MATHIEU',
   firstName: 'Mathieu',
   lastName: 'Souli',
-  title: 'Développeur Web',
-  subtitle: 'Full Stack — Vue.js · PHP · MySQL',
-  tagline: 'Je conçois des interfaces élégantes et des architectures robustes.',
-  bio: `Étudiant ingénieur en Géoinformation à la FST de Tanger, je combine rigueur scientifique et créativité technique pour construire des applications web performantes. Passionné par la cartographie, la data et l'UX, je transforme les données complexes en expériences digitales claires et engageantes.`,
+  title: 'Étudiant Ingénieur Géoinformation',
+  subtitle: 'SIG · Développement Mobile · Télédétection',
+  tagline: "Je conçois des applications géospatiales alliant cartographie, développement et intelligence artificielle.",
+  bio: "Étudiant ingénieur en Géoinformation à la FST de Tanger (Université Abdelmalek Essaâdi), spécialisé en SIG, développement d'applications géolocalisées et télédétection. Je recherche un stage PFA de 2 mois pour contribuer à des projets concrets alliant géodonnées, développement et intelligence artificielle.",
   location: 'Tanger, Maroc',
-  email: 'souli.mathieu@email.com',
-  phone: '+212 6XX XXX XXX',
-  availability: 'Disponible pour stage / alternance',
+  email: 'souli.mathieu@etu.uae.ac.ma',
+  phone: '+212 688 192 586',
+  availability: 'Disponible pour stage PFA — 2 mois',
   socials: [
     { name: 'GitHub',   url: 'https://github.com/souli-mathieu',   icon: 'github' },
-    { name: 'LinkedIn', url: 'https://linkedin.com/in/souli-mathieu', icon: 'linkedin' },
+    { name: 'LinkedIn', url: 'https://linkedin.com/in/mathieu-souli', icon: 'linkedin' },
   ]
 }
 
@@ -104,42 +104,32 @@ export const projects = [
 export const experience = [
   {
     type: 'education',
-    period: '2023 — Présent',
-    title: 'Cycle Ingénieur Géoinformation',
-    org: 'FST Tanger',
+    period: '2025 — Présent',
+    title: 'Cycle Ingénieur – Géoinformation',
+    org: 'FST de Tanger · Université Abdelmalek Essaâdi',
     location: 'Tanger, Maroc',
-    description: 'Formation d\'ingénieur spécialisée en systèmes d\'information géographique, cartographie numérique, développement web et analyse spatiale.',
-    tags: ['SIG', 'Cartographie', 'Développement Web', 'Analyse Spatiale'],
+    description: "Formation d'ingénieur spécialisée en SIG, télédétection, Geo IA, Big Data et bases de données spatiales (PostGIS).",
+    tags: ['SIG', 'Télédétection', 'Geo IA', 'Big Data', 'PostGIS'],
     highlight: true
   },
   {
-    type: 'achievement',
-    period: 'Mars 2026',
-    title: 'Water4Future Hackathon',
-    org: 'UNESCO ICIREWARD',
-    location: 'Montpellier, France',
-    description: 'Développement du projet Water Credit AI — système d\'allocation durable de l\'eau combinant satellites, crédits échangeables et IA agricole.',
-    tags: ['Hackathon', 'IA', 'Remote Sensing', 'Innovation'],
-    highlight: true
-  },
-  {
-    type: 'certification',
-    period: '2025',
-    title: 'Going Places with Spatial Analysis',
-    org: 'Esri MOOC',
-    location: 'En ligne',
-    description: 'Certification Esri sur l\'analyse spatiale avancée, interpolation, statistiques spatiales et modélisation géographique.',
-    tags: ['Esri', 'ArcGIS', 'Analyse Spatiale', 'MOOC'],
+    type: 'education',
+    period: '2022 — 2024',
+    title: 'DEUST – Mathématiques · Informatique · Physique (MIP)',
+    org: 'FST de Béni Mellal',
+    location: 'Béni Mellal, Maroc',
+    description: 'Formation scientifique en mathématiques, informatique et physique.',
+    tags: ['Mathématiques', 'Informatique', 'Physique', 'Algorithmique'],
     highlight: false
   },
   {
     type: 'education',
-    period: '2020 — 2023',
-    title: 'Classes Préparatoires — CPGE',
-    org: 'Lycée technique',
-    location: 'Maroc',
-    description: 'Formation scientifique intensive en mathématiques, physique, informatique. Développement de la rigueur analytique et des capacités de résolution de problèmes complexes.',
-    tags: ['Mathématiques', 'Physique', 'Algorithmique'],
+    period: '2021 — 2022',
+    title: 'Baccalauréat série D',
+    org: 'Complexe Scolaire Horizon International',
+    location: 'Ouagadougou, Burkina Faso',
+    description: 'Baccalauréat scientifique série D.',
+    tags: ['Sciences', 'Mathématiques', 'Burkina Faso'],
     highlight: false
   }
 ]

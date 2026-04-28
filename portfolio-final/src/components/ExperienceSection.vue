@@ -4,10 +4,10 @@
       <div class="exp-intro">
         <div>
           <div class="section-label reveal">04 / Parcours</div>
-          <h2 class="reveal reveal-delay-1">Formation<br><em>&amp; Expériences</em></h2>
+          <h2 class="reveal reveal-delay-1">Formation<br><em>&amp; Parcours</em></h2>
         </div>
         <p class="reveal reveal-delay-2">
-          Un parcours mêlant rigueur académique, projets concrets et ouverture internationale — de la CPGE à l'ingénierie géomatique en passant par des hackathons UNESCO.
+          Mon parcours académique, du Baccalauréat série D au cycle ingénieur en Géoinformation à l’Université Abdelmalek Essaâdi.
         </p>
       </div>
 
