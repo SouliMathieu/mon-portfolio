@@ -52,9 +52,10 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { usePortfolioData } from '@/composables/usePortfolioData.js'
 
-const { profile } = usePortfolioData()
+const props = defineProps({
+  profile: { type: Object, default: () => ({}) }
+})
 
 const navItems = [
   { id: 'about',      label: 'À propos',    num: '01' },

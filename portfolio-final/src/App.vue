@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <NavBar />
+    <NavBar :profile="profile" />
     <main>
       <HeroSection       :profile="profile" :stats="stats" />
       <div class="divider"></div>

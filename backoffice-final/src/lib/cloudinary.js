@@ -19,7 +19,7 @@ export async function uploadImage(file, folder = 'portfolio') {
   formData.append('folder', folder)
 
   const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
     { method: 'POST', body: formData }
   )
 
