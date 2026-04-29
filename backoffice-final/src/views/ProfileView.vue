@@ -185,7 +185,8 @@ const saving  = ref(false)
 let profileId = null
 
 const { uploading, uploadError, upload } = useCloudinaryUpload()
-const { uploading: uploadingCv, uploadError: uploadCvError, upload: uploadToCloudinaryCv } = useCloudinaryUpload()
+const uploadingCv = ref(false)
+const uploadCvError = ref(null)
 
 const form = reactive({
   first_name:'', last_name:'', title:'', subtitle:'', tagline:'',
@@ -252,14 +253,32 @@ const uploadPhoto = async (e) => {
 const uploadCv = async (e) => {
   const file = e.target.files?.[0]
   if (!file) return
+  uploadingCv.value = true
+  uploadCvError.value = null
   try {
-    const result = await uploadToCloudinaryCv(file, 'portfolio/cv', 'raw')
-    form.cv_url = result.url
-    toast('CV uploadé sur Cloudinary ✓')
+    const fileExt = file.name.split('.').pop()
+    const fileName = `cv_${Date.now()}.${fileExt}`
+    
+    // Upload to Supabase Storage
+    const { error } = await supabase.storage
+      .from('portfolio')
+      .upload(fileName, file, { cacheControl: '3600', upsert: true })
+      
+    if (error) throw error
+    
+    const { data } = supabase.storage
+      .from('portfolio')
+      .getPublicUrl(fileName)
+      
+    form.cv_url = data.publicUrl
+    toast('CV uploadé sur Supabase ✓')
     // Sauvegarder automatiquement dans la base de données
     await save()
   } catch (err) {
+    uploadCvError.value = 'Erreur upload CV: ' + err.message
     toast('Erreur upload CV: ' + err.message, 'error')
+  } finally {
+    uploadingCv.value = false
   }
 }
 
