@@ -259,19 +259,25 @@ const uploadCv = async (e) => {
     const fileExt = file.name.split('.').pop()
     const fileName = `cv_${Date.now()}.${fileExt}`
     
-    // Read file as ArrayBuffer to prevent multipart wrapping issues
-    const arrayBuffer = await file.arrayBuffer()
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
     
-    // Upload to Supabase Storage
-    const { error } = await supabase.storage
-      .from('portfolio')
-      .upload(fileName, arrayBuffer, { 
-        cacheControl: '3600', 
-        upsert: true,
-        contentType: file.type || 'application/pdf'
-      })
-      
-    if (error) throw error
+    // Upload direct via fetch to avoid supabase-js FormData issues
+    const res = await fetch(`${supabaseUrl}/storage/v1/object/portfolio/${fileName}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': file.type || 'application/pdf',
+        'Cache-Control': 'max-age=3600'
+      },
+      body: file
+    })
+    
+    if (!res.ok) {
+      const err = await res.json()
+      throw new Error(err.message || 'Erreur Supabase Storage API')
+    }
     
     const { data } = supabase.storage
       .from('portfolio')
