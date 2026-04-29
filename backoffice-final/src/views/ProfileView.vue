@@ -259,10 +259,17 @@ const uploadCv = async (e) => {
     const fileExt = file.name.split('.').pop()
     const fileName = `cv_${Date.now()}.${fileExt}`
     
+    // Read file as ArrayBuffer to prevent multipart wrapping issues
+    const arrayBuffer = await file.arrayBuffer()
+    
     // Upload to Supabase Storage
     const { error } = await supabase.storage
       .from('portfolio')
-      .upload(fileName, file, { cacheControl: '3600', upsert: true })
+      .upload(fileName, arrayBuffer, { 
+        cacheControl: '3600', 
+        upsert: true,
+        contentType: file.type || 'application/pdf'
+      })
       
     if (error) throw error
     
