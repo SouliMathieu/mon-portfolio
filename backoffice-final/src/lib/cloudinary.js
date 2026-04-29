@@ -10,16 +10,17 @@ const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'VOTRE_UP
  * Upload une image vers Cloudinary
  * @param {File} file - Le fichier image
  * @param {string} folder - Dossier dans Cloudinary (ex: 'portfolio/projects')
+ * @param {string} resourceType - Type de ressource ('auto', 'image', 'raw', 'video')
  * @returns {Promise<{url: string, publicId: string}>}
  */
-export async function uploadImage(file, folder = 'portfolio') {
+export async function uploadImage(file, folder = 'portfolio', resourceType = 'auto') {
   const formData = new FormData()
   formData.append('file', file)
   formData.append('upload_preset', UPLOAD_PRESET)
   formData.append('folder', folder)
 
   const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`,
     { method: 'POST', body: formData }
   )
 
@@ -61,11 +62,11 @@ export function useCloudinaryUpload() {
   const uploadError = ref(null)
   const uploadedUrl = ref(null)
 
-  const upload = async (file, folder = 'portfolio') => {
+  const upload = async (file, folder = 'portfolio', resourceType = 'auto') => {
     uploading.value   = true
     uploadError.value = null
     try {
-      const result = await uploadImage(file, folder)
+      const result = await uploadImage(file, folder, resourceType)
       uploadedUrl.value = result.url
       return result
     } catch (e) {

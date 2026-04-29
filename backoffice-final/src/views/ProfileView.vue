@@ -253,7 +253,7 @@ const uploadCv = async (e) => {
   const file = e.target.files?.[0]
   if (!file) return
   try {
-    const result = await uploadToCloudinaryCv(file, 'portfolio/cv')
+    const result = await uploadToCloudinaryCv(file, 'portfolio/cv', 'raw')
     form.cv_url = result.url
     toast('CV uploadé sur Cloudinary ✓')
     // Sauvegarder automatiquement dans la base de données
