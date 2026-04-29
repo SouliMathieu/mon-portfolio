@@ -40,6 +40,7 @@ export function usePortfolioData() {
           email:     d.email    || profile.email,
           phone:     d.phone    || profile.phone,
           availability: d.availability || profile.availability,
+          photoUrl:  d.photo_url || null,
           photo_url: d.photo_url || null,
           cv_url:    d.cv_url || null,
           socials: [
