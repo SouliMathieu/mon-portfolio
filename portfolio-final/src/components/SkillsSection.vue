@@ -25,7 +25,7 @@
           </div>
           <div
             v-for="skill in group.items"
-            :key="skill.uniqueKey || `${group.category}-${skill.name}`"
+            :key="`${group.category}-${skill.name}`"
             class="skill-item"
           >
             <div class="skill-row">

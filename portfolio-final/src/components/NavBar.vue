@@ -7,7 +7,10 @@
           <svg viewBox="0 0 36 36" fill="none">
             <circle cx="18" cy="18" r="16" stroke="rgba(0,212,255,0.3)" stroke-width="1" stroke-dasharray="4 4"/>
           </svg>
-          <div class="nav-logo-inner">SM</div>
+        <div class="nav-logo-inner">
+          <img v-if="profile?.photo_url" :src="profile.photo_url" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;" />
+          <template v-else>SM</template>
+        </div>
         </div>
         <div class="nav-logo-text">
           <span class="nav-logo-name">SOULI MATHIEU</span>
@@ -49,6 +52,9 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { usePortfolioData } from '@/composables/usePortfolioData.js'
+
+const { profile } = usePortfolioData()
 
 const navItems = [
   { id: 'about',      label: 'À propos',    num: '01' },

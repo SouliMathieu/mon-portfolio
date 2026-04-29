@@ -65,6 +65,42 @@
         </div>
       </div>
 
+      <!-- CV Upload -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Curriculum Vitae (CV)</span></div>
+        <div class="photo-section">
+          <div class="photo-info">
+            <div v-if="uploadingCv" class="mono" style="font-size:.7rem;color:var(--cyan)">
+              <span class="spinner spinner-sm"></span> Upload en cours...
+            </div>
+            <div v-else-if="form.cv_url" class="mono" style="font-size:.65rem;color:var(--text-3);word-break:break-all">
+              {{ form.cv_url }}
+            </div>
+            <div v-else class="mono" style="font-size:.7rem;color:var(--text-3)">
+              Aucun CV - Cliquez sur le bouton pour en ajouter un.
+            </div>
+            <p style="margin-top:.75rem;font-size:.82rem">
+              Le fichier sera hébergé sur Cloudinary et pourra être téléchargé depuis le frontend.
+            </p>
+            <div style="display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm" @click="$refs.cvFile.click()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Uploader le CV
+              </button>
+              <button v-if="form.cv_url" class="btn btn-danger btn-sm" @click="form.cv_url=''">
+                Supprimer
+              </button>
+            </div>
+            <input ref="cvFile" type="file" accept=".pdf,.doc,.docx" style="display:none" @change="uploadCv"/>
+            <div v-if="uploadCvError" class="form-error-msg" style="margin-top:8px">{{ uploadCvError }}</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Informations de base -->
       <div class="card">
         <div class="card-header"><span class="card-title">Informations de base</span></div>
@@ -149,11 +185,12 @@ const saving  = ref(false)
 let profileId = null
 
 const { uploading, uploadError, upload } = useCloudinaryUpload()
+const { uploading: uploadingCv, uploadError: uploadCvError, upload: uploadToCloudinaryCv } = useCloudinaryUpload()
 
 const form = reactive({
   first_name:'', last_name:'', title:'', subtitle:'', tagline:'',
   bio:'', location:'', email:'', phone:'', availability:'',
-  github_url:'', linkedin_url:'', photo_url:''
+  github_url:'', linkedin_url:'', photo_url:'', cv_url:''
 })
 
 const initials = computed(() => {
@@ -168,7 +205,7 @@ onMounted(async () => {
     // Récupérer tous les profils triés par date de mise à jour (plus récent d'abord)
     const { data, error } = await supabase
       .from('profile')
-      .select('id, first_name, last_name, title, subtitle, tagline, bio, location, email, phone, availability, github_url, linkedin_url, photo_url, updated_at')
+      .select('id, first_name, last_name, title, subtitle, tagline, bio, location, email, phone, availability, github_url, linkedin_url, photo_url, cv_url, updated_at')
       .order('updated_at', { ascending: false }) // Plus récent d'abord
     
     console.log('Nombre de profils trouvés:', data?.length || 0)
@@ -209,6 +246,20 @@ const uploadPhoto = async (e) => {
     await save()
   } catch (err) {
     toast('Erreur upload: ' + err.message, 'error')
+  }
+}
+
+const uploadCv = async (e) => {
+  const file = e.target.files?.[0]
+  if (!file) return
+  try {
+    const result = await uploadToCloudinaryCv(file, 'portfolio/cv')
+    form.cv_url = result.url
+    toast('CV uploadé sur Cloudinary ✓')
+    // Sauvegarder automatiquement dans la base de données
+    await save()
+  } catch (err) {
+    toast('Erreur upload CV: ' + err.message, 'error')
   }
 }
 

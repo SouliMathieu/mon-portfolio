@@ -52,7 +52,7 @@
             <div class="cv-cta-label mono">CV complet</div>
             <div class="cv-cta-text">Toutes mes expériences en un document</div>
           </div>
-          <a href="#" class="btn btn-primary" download>
+          <a :href="profile?.cv_url || '#'" :target="profile?.cv_url ? '_blank' : null" class="btn btn-primary" :download="profile?.cv_url ? 'CV_Souli_Mathieu' : null">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
             </svg>
@@ -66,7 +66,8 @@
 
 <script setup>
 const props = defineProps({
-  experience: { type: Array, default: () => [] }
+  experience: { type: Array, default: () => [] },
+  profile: { type: Object, default: () => ({}) }
 })
 
 const typeLabel = (type) => ({

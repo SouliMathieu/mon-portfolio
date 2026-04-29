@@ -10,7 +10,7 @@
       <div class="divider"></div>
       <ProjectsSection   :projects="projects" />
       <div class="divider"></div>
-      <ExperienceSection :experience="experience" />
+      <ExperienceSection :experience="experience" :profile="profile" />
       <div class="divider"></div>
       <ContactSection    :profile="profile" />
     </main>

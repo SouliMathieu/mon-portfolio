@@ -23,12 +23,14 @@ CREATE TABLE IF NOT EXISTS profile (
   github_url    text,
   linkedin_url  text,
   photo_url     text,   -- ← URL Cloudinary de la photo de profil
+  cv_url        text,   -- ← URL Cloudinary du CV
   updated_at    timestamptz DEFAULT now()
 );
 
--- Ajouter photo_url si table profile existe déjà
+-- Ajouter photo_url et cv_url si table profile existe déjà
 DO $$ BEGIN
   ALTER TABLE profile ADD COLUMN IF NOT EXISTS photo_url text;
+  ALTER TABLE profile ADD COLUMN IF NOT EXISTS cv_url text;
 EXCEPTION WHEN OTHERS THEN NULL;
 END $$;
 
