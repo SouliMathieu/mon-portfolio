@@ -1,0 +1,63 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "skills": "Compétences",
+    "projects": "Projets"
+  },
+  "hero": {
+    "name": "Mathieu Souli",
+    "role": "Ingénieur en Géoinformation — GeoAI & Data Spatiale",
+    "tagline": "Je transforme la donnée satellite en décisions.",
+    "description": "Ingénieur en Géoinformation spécialisé en télédétection, SIG et GeoAI, je développe des solutions full stack qui exploitent la donnée spatiale à grande échelle. De l'analyse d'imagerie satellite à la mise en production d'applications web, mobiles et desktop.",
+    "cta_projects": "Voir mes projets",
+    "cta_cv": "Télécharger CV",
+    "stats": {
+      "projects": "Projets réalisés",
+      "hackathons": "Hackathons",
+      "technologies": "Technologies",
+      "certifications": "Certifications"
+    },
+    "expertise": {
+      "fullstack": "Développement Full Stack",
+      "gis": "Géomatique & SIG",
+      "geoai": "GeoAI & Data Science",
+      "satellite": "Satellites & Imagerie"
+    }
+  },
+  "about": {
+    "title": "À propos",
+    "bio": "Étudiant ingénieur en Géoinformation à la FST de Tanger (Université Abdelmalek Essaâdi), je me spécialise dans la Géo IA — Machine Learning et Deep Learning appliqués aux données géospatiales —, l'analyse Big Data spatial, la télédétection et le développement d'applications web et mobiles géolocalisées. Mon parcours m'a mené du nettoyage de données cadastrales sous AutoCAD et QGIS à la Direction Générale des Impôts du Burkina Faso, jusqu'au développement de Water Credit AI, une plateforme géospatiale combinant imagerie Sentinel-2, indices NDVI et machine learning, présentée lors du Hackathon UNESCO Water4Future. Je recherche aujourd'hui un stage PFA de 2 mois pour mettre ces compétences au service de projets à fort impact territorial ou environnemental.",
+    "highlights": [
+      {
+        "title": "Cycle Ingénieur — Géoinformation",
+        "period": "FST Tanger, 2025-Présent",
+        "description": "SIG, Télédétection, Géo IA, Big Data Spatial, PostGIS"
+      },
+      {
+        "title": "Water Credit AI — Hackathon UNESCO Water4Future",
+        "period": "Février 2026",
+        "description": "Plateforme géospatiale NDVI/Sentinel-2 et ML pour la recommandation agricole, développée en 48h"
+      },
+      {
+        "title": "Stage — Service du Cadastre, DGI Burkina Faso",
+        "period": "Août-Sept. 2025",
+        "description": "Digitalisation et vectorisation de parcelles sous QGIS, production de données PostGIS"
+      },
+      {
+        "title": "Engagement associatif",
+        "period": "2024-2025",
+        "description": "Membre actif du Club Géoinformation FST Tanger, Commissaire aux comptes AEBM Tanger"
+      }
+    ],
+    "contact": {
+      "title": "Contact",
+      "form_name": "Nom",
+      "form_email": "Email",
+      "form_message": "Message",
+      "form_submit": "Envoyer",
+      "form_success": "Message envoyé avec succès !",
+      "form_error": "Une erreur est survenue, réessaie plus tard."
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "skills": "Skills",
+    "projects": "Projects"
+  },
+  "hero": {
+    "name": "Mathieu Souli",
+    "role": "Geoinformation Engineer — GeoAI & Spatial Data",
+    "tagline": "I turn satellite data into decisions.",
+    "description": "Geoinformation engineer specialized in remote sensing, GIS, and GeoAI, I build full-stack solutions that leverage spatial data at scale — from satellite imagery analysis to production-ready web, mobile, and desktop applications.",
+    "cta_projects": "View my projects",
+    "cta_cv": "Download CV",
+    "stats": {
+      "projects": "Projects completed",
+      "hackathons": "Hackathons",
+      "technologies": "Technologies",
+      "certifications": "Certifications"
+    },
+    "expertise": {
+      "fullstack": "Full Stack Development",
+      "gis": "GIS & Geomatics",
+      "geoai": "GeoAI & Data Science",
+      "satellite": "Satellites & Imagery"
+    }
+  },
+  "about": {
+    "title": "About",
+    "bio": "Engineering student in Geoinformation at FST Tangier (Abdelmalek Essaâdi University), I specialize in GeoAI — machine learning and deep learning applied to geospatial data —, spatial Big Data analysis, remote sensing, and the development of location-based web and mobile applications. My path has taken me from cleaning cadastral data with AutoCAD and QGIS at Burkina Faso's Directorate General of Taxes, to building Water Credit AI, a geospatial platform combining Sentinel-2 imagery, NDVI indices, and machine learning, presented at the UNESCO Water4Future Hackathon. I'm currently looking for a 2-month final-year internship to apply these skills to projects with real territorial or environmental impact.",
+    "highlights": [
+      {
+        "title": "Engineering Degree — Geoinformation",
+        "period": "FST Tangier, 2025-Present",
+        "description": "GIS, Remote Sensing, GeoAI, Spatial Big Data, PostGIS"
+      },
+      {
+        "title": "Water Credit AI — UNESCO Water4Future Hackathon",
+        "period": "February 2026",
+        "description": "Geospatial platform using NDVI/Sentinel-2 and ML for agricultural recommendations, built in 48h"
+      },
+      {
+        "title": "Internship — Cadastre Department, Burkina Faso DGI",
+        "period": "Aug-Sept 2025",
+        "description": "Parcel digitization and vectorization with QGIS, PostGIS data production"
+      },
+      {
+        "title": "Community involvement",
+        "period": "2024-2025",
+        "description": "Active member of FST Tangier's Geoinformation Club, Auditor for AEBM Tangier"
+      }
+    ],
+    "contact": {
+      "title": "Contact",
+      "form_name": "Name",
+      "form_email": "Email",
+      "form_message": "Message",
+      "form_submit": "Send",
+      "form_success": "Message sent successfully!",
+      "form_error": "Something went wrong, please try again later."
+    }
+  }
+}

@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  /* Couleurs — palette validée dans le cahier des charges */
+  --color-navy: #1B2838;
+  --color-navy-light: #24354A;
+  --color-ndvi: #4DFFA0;
+  --color-nebula-pink: #FF6B9D;
+  --color-nebula-violet: #7B2FF7;
+  --color-nebula-orange: #FF8A3D;
+  --color-offwhite: #F4F6F8;
+
+  /* Typographie */
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-body: var(--font-ibm-plex-sans), sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), monospace;
+
+  /* Rayons — boutons pill, cartes glass */
+  --radius-pill: 999px;
+  --radius-card: 20px;
+}
+
+body {
+  background-color: var(--color-navy);
+  color: var(--color-offwhite);
+  font-family: var(--font-body);
+}
+
+/* Composant réutilisable : carte glassmorphism */
+.glass-card {
+  background: rgba(244, 246, 248, 0.06);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(244, 246, 248, 0.12);
+  border-radius: var(--radius-card);
+}
+
+/* Composant réutilisable : bouton pill */
+.btn-pill {
+  border-radius: var(--radius-pill);
+  padding: 0.75rem 1.75rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-pill:hover {
+  transform: translateY(-2px);
+}
+
+/* Respect de prefers-reduced-motion (exigence WCAG du cahier des charges) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+/* Fond nébuleuse animé */
+@keyframes drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, -40px) scale(1.15); }
+}
+
+@keyframes drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, 50px) scale(1.1); }
+}
+
+@keyframes drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 60px) scale(1.2); }
+}
+
+.nebula-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.nebula-blob-1 {
+  background: var(--color-nebula-pink);
+  width: 500px;
+  height: 500px;
+  top: -10%;
+  right: -5%;
+  animation: drift-1 22s ease-in-out infinite;
+}
+
+.nebula-blob-2 {
+  background: var(--color-nebula-violet);
+  width: 600px;
+  height: 600px;
+  bottom: -15%;
+  right: 10%;
+  animation: drift-2 28s ease-in-out infinite;
+}
+
+.nebula-blob-3 {
+  background: var(--color-nebula-orange);
+  width: 400px;
+  height: 400px;
+  top: 40%;
+  right: 25%;
+  animation: drift-3 25s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nebula-blob {
+    animation: none !important;
+  }
+}
