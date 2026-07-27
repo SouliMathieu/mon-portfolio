@@ -10,7 +10,7 @@ import SkillsGrid from '@/components/skills/SkillsGrid';
 // Component (erreur "Only plain objects can be passed..."). On transmet
 // donc uniquement le `slug` (string) — c'est SkillsGrid.tsx, déjà côté
 // client, qui résout l'icône correspondante localement.
-
+export const dynamic = "force-dynamic";
 export default async function SkillsPage({
   params,
 }: {

@@ -5,7 +5,7 @@ import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 import GithubIcon from '@/components/icons/GithubIcon';
 import ProjectGallery from '@/components/projects/ProjectGallery';
-
+export const dynamic = "force-dynamic";
 export default async function ProjectDetailPage({
   params,
 }: {

@@ -7,7 +7,7 @@ import ContactInfo from "@/components/sections/ContactInfo";
 import ContactForm from "@/components/sections/ContactForm";
 
 type Highlight = { title: string; period: string; description: string };
-
+export const dynamic = "force-dynamic";
 export default async function AboutPage({
   params,
 }: {

@@ -3,7 +3,7 @@ import Hero from "@/components/sections/Hero";
 import NebulaBackground from "@/components/sections/NebulaBackground";
 import GlobeLoader from "@/components/sections/GlobeLoader";
 import ExpertiseCards from "@/components/sections/ExpertiseCards";
-
+export const dynamic = "force-dynamic";
 export default async function Home({
   params,
 }: {
