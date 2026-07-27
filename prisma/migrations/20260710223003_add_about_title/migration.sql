@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `aboutcontent` ADD COLUMN `titleEn` VARCHAR(191) NOT NULL DEFAULT '',
+    ADD COLUMN `titleFr` VARCHAR(191) NOT NULL DEFAULT '';

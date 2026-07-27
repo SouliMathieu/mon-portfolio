@@ -1,16 +1,37 @@
+import { prisma } from "@/lib/prisma";
 import Hero from "@/components/sections/Hero";
 import NebulaBackground from "@/components/sections/NebulaBackground";
-import Globe from "@/components/sections/Globe";
+import GlobeLoader from "@/components/sections/GlobeLoader";
 import ExpertiseCards from "@/components/sections/ExpertiseCards";
 
-export default function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
+  const [projectsCount, technologiesCount, certificationsCount] =
+    await Promise.all([
+      prisma.project.count(),
+      prisma.technology.count(),
+      prisma.certification.count(),
+    ]);
+
   return (
-    <main className="relative min-h-screen overflow-hidden flex items-center">
+    <main className="relative min-h-[calc(100vh-5rem)] overflow-hidden flex items-center">
       <NebulaBackground />
       <div className="w-full flex flex-col lg:flex-row items-center justify-between">
-        <Hero />
+        <Hero
+          locale={locale}
+          stats={{
+            projects: projectsCount,
+            technologies: technologiesCount,
+            certifications: certificationsCount,
+          }}
+        />
         <div className="hidden lg:block relative flex-shrink-0 pr-12">
-          <Globe />
+          <GlobeLoader />
           <ExpertiseCards />
         </div>
       </div>

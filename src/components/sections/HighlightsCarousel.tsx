@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Card from "@/components/ui/Card";
 
@@ -11,10 +10,18 @@ interface Highlight {
   description: string;
 }
 
-export default function HighlightsCarousel() {
-  const t = useTranslations("about");
-  const highlights = t.raw("highlights") as Highlight[];
+type HighlightsCarouselProps = {
+  highlights: Highlight[];
+};
+
+export default function HighlightsCarousel({
+  highlights,
+}: HighlightsCarouselProps) {
   const [index, setIndex] = useState(0);
+
+  if (!highlights || highlights.length === 0) {
+    return null;
+  }
 
   const goPrev = () =>
     setIndex((i) => (i === 0 ? highlights.length - 1 : i - 1));

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { animate } from "framer-motion";
+import { animate, useReducedMotion } from "framer-motion";
 
 interface AnimatedCounterProps {
   value: number;
@@ -14,16 +14,22 @@ export default function AnimatedCounter({
   suffix = "",
   duration = 1.5,
 }: AnimatedCounterProps) {
-  const [display, setDisplay] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
+  const [display, setDisplay] = useState(shouldReduceMotion ? value : 0);
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      setDisplay(value);
+      return;
+    }
+
     const controls = animate(0, value, {
       duration,
       ease: "easeOut",
       onUpdate: (latest) => setDisplay(Math.round(latest)),
     });
     return () => controls.stop();
-  }, [value, duration]);
+  }, [value, duration, shouldReduceMotion]);
 
   return (
     <span>

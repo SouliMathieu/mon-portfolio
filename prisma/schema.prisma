@@ -32,7 +32,7 @@ model ProjectImage {
   altFr     String?
   altEn     String?
   order     Int     @default(0)
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId Int
 }
 
@@ -45,6 +45,7 @@ model SkillBlock {
   descriptionEn String       @db.Text
   order         Int          @default(0)
   technologies  Technology[]
+  
 }
 
 model Technology {
@@ -54,6 +55,8 @@ model Technology {
   skillBlock   SkillBlock  @relation(fields: [skillBlockId], references: [id], onDelete: Cascade)
   skillBlockId Int
   projects     Project[]
+  
+  @@unique([name, skillBlockId])
 }
 
 model AboutContent {
@@ -69,6 +72,8 @@ model AboutContent {
   location     String
   photoUrl     String?
   updatedAt    DateTime @updatedAt
+  titleFr       String   @default("")
+  titleEn       String   @default("")
 }
 
 model ContactMessage {
@@ -84,4 +89,22 @@ model Admin {
   id       Int    @id @default(autoincrement())
   email    String @unique
   password String
+}
+model Certification {
+  id      Int      @id @default(autoincrement())
+  titleFr String
+  titleEn String
+  issuer  String
+  date    DateTime
+  url     String?
+  fileUrl String?
+  order   Int      @default(0)
+}
+model Service {
+  id            Int    @id @default(autoincrement())
+  titleFr       String
+  titleEn       String
+  descriptionFr String @db.Text
+  descriptionEn String @db.Text
+  order         Int    @default(0)
 }

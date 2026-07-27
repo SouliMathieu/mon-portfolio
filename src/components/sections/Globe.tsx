@@ -58,16 +58,17 @@ export default function Globe() {
 
     console.log("Globe prêt, initialisation du satellite...");
 
-    globeRef.current.controls().autoRotate = true;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    // La rotation automatique du globe respecte prefers-reduced-motion
+    globeRef.current.controls().autoRotate = !prefersReducedMotion;
     globeRef.current.controls().autoRotateSpeed = 0.5;
     globeRef.current.pointOfView({ lat: 30, lng: 10, altitude: 2.2 });
 
     let frameId: number;
     let satelliteObject: THREE.Object3D | null = null;
-
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
 
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath(
@@ -157,7 +158,12 @@ export default function Globe() {
         pointAltitude={0.02}
         pointLabel="name"
         onPointClick={handlePointClick}
-        onGlobeReady={() => setGlobeReady(true)}
+        onGlobeReady={() => {
+          // react-globe.gl peut appeler ce callback de façon synchrone
+          // pendant son initialisation, avant que React ait fini de monter
+          // le composant. On décale d'un tick pour éviter l'avertissement.
+          setTimeout(() => setGlobeReady(true), 0);
+        }}
       />
     </div>
   );
