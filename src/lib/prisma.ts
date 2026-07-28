@@ -4,10 +4,12 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+const databaseUrl = process.env.DATABASE_URL || "";
+
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
   datasources: {
     db: {
-      url: "mysql://u596410000_portfolio:TestMDP1234@127.0.0.1:3306/u596410000_portfolio",
+      url: databaseUrl,
     },
   },
 });
