@@ -41,7 +41,10 @@ export default function Globe() {
 
   useEffect(() => {
     const updateSize = () => {
-      const size = Math.min(window.innerWidth * 0.5, 600);
+      const isMobile = window.innerWidth < 1024;
+      const size = isMobile
+        ? Math.min(window.innerWidth * 0.7, 350)
+        : Math.min(window.innerWidth * 0.5, 600);
       setDimensions({ width: size, height: size });
     };
     updateSize();
@@ -49,12 +52,13 @@ export default function Globe() {
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  // Ce bloc ne se déclenche qu'une fois le globe RÉELLEMENT prêt (onGlobeReady)
   useEffect(() => {
     if (!globeReady || !globeRef.current) {
       console.log("Globe pas encore prêt, en attente...");
       return;
     }
+
+    const isMobile = window.innerWidth < 1024;
 
     console.log("Globe prêt, initialisation du satellite...");
 
@@ -62,10 +66,11 @@ export default function Globe() {
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    // La rotation automatique du globe respecte prefers-reduced-motion
     globeRef.current.controls().autoRotate = !prefersReducedMotion;
     globeRef.current.controls().autoRotateSpeed = 0.5;
     globeRef.current.pointOfView({ lat: 30, lng: 10, altitude: 2.2 });
+
+    if (isMobile) return;
 
     let frameId: number;
     let satelliteObject: THREE.Object3D | null = null;
@@ -89,9 +94,6 @@ export default function Globe() {
 
         const scaleFactor = TARGET_SIZE / maxDimension;
         satelliteObject.scale.setScalar(scaleFactor);
-
-        console.log("Taille originale du satellite :", size);
-        console.log("Facteur d'échelle appliqué :", scaleFactor);
 
         globeRef.current.scene().add(satelliteObject);
         satelliteRef.current = satelliteObject;
@@ -159,9 +161,6 @@ export default function Globe() {
         pointLabel="name"
         onPointClick={handlePointClick}
         onGlobeReady={() => {
-          // react-globe.gl peut appeler ce callback de façon synchrone
-          // pendant son initialisation, avant que React ait fini de monter
-          // le composant. On décale d'un tick pour éviter l'avertissement.
           setTimeout(() => setGlobeReady(true), 0);
         }}
       />

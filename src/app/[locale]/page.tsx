@@ -21,7 +21,10 @@ export default async function Home({
   return (
     <main className="relative min-h-[calc(100vh-5rem)] overflow-hidden flex items-center">
       <NebulaBackground />
-      <div className="w-full flex flex-col lg:flex-row items-center justify-between">
+      <div className="w-full flex flex-col lg:flex-row items-center justify-between relative">
+        <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none lg:hidden">
+          <GlobeLoader />
+        </div>
         <Hero
           locale={locale}
           stats={{
