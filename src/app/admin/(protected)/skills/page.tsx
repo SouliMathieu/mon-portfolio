@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import SkillBlockCard from "@/components/admin/skills/SkillBlockCard";
+import CreateSkillBlockForm from "@/components/admin/skills/CreateSkillBlockForm";
 
 export default async function AdminSkillsPage() {
   const skillBlocks = await prisma.skillBlock.findMany({
@@ -20,6 +21,8 @@ export default async function AdminSkillsPage() {
         {skillBlocks.map((block) => (
           <SkillBlockCard key={block.id} block={block} />
         ))}
+
+        <CreateSkillBlockForm />
       </div>
     </div>
   );

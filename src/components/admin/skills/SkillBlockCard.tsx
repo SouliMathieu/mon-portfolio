@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ChevronDown, Pencil, Plus } from "lucide-react";
+import { ChevronDown, Pencil, Plus, Trash2 } from "lucide-react";
 import TechnologyRow from "./TechnologyRow";
 import {
   updateSkillBlock,
+  deleteSkillBlock,
   createTechnology,
 } from "@/app/admin/(protected)/skills/actions";
 
@@ -56,6 +57,27 @@ export default function SkillBlockCard({ block }: SkillBlockCardProps) {
         setEditingBlock(false);
       } catch {
         setError("Erreur lors de l'enregistrement du bloc.");
+      }
+    });
+  };
+
+  const handleDeleteBlock = () => {
+    setError("");
+    const count = block.technologies.length;
+    const confirmed = window.confirm(
+      count > 0
+        ? `Supprimer le bloc "${block.titleFr}" ? Les ${count} technologie${
+            count > 1 ? "s" : ""
+          } qu'il contient seront supprimées avec lui. Cette action est irréversible.`
+        : `Supprimer le bloc "${block.titleFr}" ? Cette action est irréversible.`
+    );
+    if (!confirmed) return;
+
+    startTransition(async () => {
+      try {
+        await deleteSkillBlock(block.id);
+      } catch {
+        setError("Erreur lors de la suppression du bloc.");
       }
     });
   };
@@ -114,14 +136,25 @@ export default function SkillBlockCard({ block }: SkillBlockCardProps) {
                 Contenu du bloc
               </p>
               {!editingBlock && (
-                <button
-                  type="button"
-                  onClick={() => setEditingBlock(true)}
-                  className="flex items-center gap-1.5 text-xs text-[#4DFFA0] hover:opacity-80 transition-opacity"
-                >
-                  <Pencil size={12} />
-                  Modifier
-                </button>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setEditingBlock(true)}
+                    className="flex items-center gap-1.5 text-xs text-[#4DFFA0] hover:opacity-80 transition-opacity"
+                  >
+                    <Pencil size={12} />
+                    Modifier
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeleteBlock}
+                    disabled={isPending}
+                    className="flex items-center gap-1.5 text-xs text-red-400 hover:opacity-80 transition-opacity disabled:opacity-50"
+                  >
+                    <Trash2 size={12} />
+                    Supprimer le bloc
+                  </button>
+                </div>
               )}
             </div>
 

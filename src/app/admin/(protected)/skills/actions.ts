@@ -18,6 +18,51 @@ function revalidateSkillsPaths() {
   revalidatePath("/en/skills");
 }
 
+export async function createSkillBlock(formData: FormData) {
+  const slug = (formData.get("slug") as string)?.trim();
+  const titleFr = (formData.get("titleFr") as string)?.trim();
+  const titleEn = (formData.get("titleEn") as string)?.trim();
+  const descriptionFr = (formData.get("descriptionFr") as string) ?? "";
+  const descriptionEn = (formData.get("descriptionEn") as string) ?? "";
+
+  if (!slug || !titleFr || !titleEn) {
+    throw new Error("Slug, titre FR et titre EN sont requis.");
+  }
+
+  const last = await prisma.skillBlock.findFirst({
+    orderBy: { order: "desc" },
+    select: { order: true },
+  });
+  const nextOrder = (last?.order ?? 0) + 1;
+
+  try {
+    await prisma.skillBlock.create({
+      data: {
+        slug,
+        titleFr,
+        titleEn,
+        descriptionFr,
+        descriptionEn,
+        order: nextOrder,
+      },
+    });
+  } catch (err) {
+    if (isUniqueConstraintError(err)) {
+      throw new Error("Un bloc avec ce slug existe déjà.");
+    }
+    throw err;
+  }
+
+  revalidateSkillsPaths();
+}
+
+export async function deleteSkillBlock(id: number) {
+  // onDelete: Cascade sur Technology.skillBlock supprime automatiquement
+  // les technologies rattachées, pas besoin de les supprimer à la main.
+  await prisma.skillBlock.delete({ where: { id } });
+  revalidateSkillsPaths();
+}
+
 export async function updateSkillBlock(id: number, formData: FormData) {
   const titleFr = (formData.get("titleFr") as string)?.trim();
   const titleEn = (formData.get("titleEn") as string)?.trim();
