@@ -13,12 +13,15 @@ cloudinary.config({
 export { cloudinary };
 
 // Public IDs fixes : chaque nouvel upload écrase (overwrite) le même asset
-// Cloudinary au lieu d'en créer un nouveau. Pour les CV, ça permet de
-// reconstruire une URL stable, sans numéro de version, qui ne change jamais
-// même après un nouvel upload — comme avec l'ancien fichier local à nom fixe.
+// Cloudinary au lieu d'en créer un nouveau. Pour les CV, on veut une URL
+// stable, sans numéro de version, qui ne change jamais après un nouvel
+// upload. Ça ne marche de façon fiable QUE pour des public_id à la racine
+// du compte (sans "/") - Cloudinary insère un faux "v1" pour les assets
+// dans un dossier, qui ne résout pas toujours (404) selon la config
+// d'invalidation du compte. D’où l’absence de dossier pour les CV ici.
 export const PHOTO_PUBLIC_ID = "portfolio/about/photo";
-export const CV_FR_PUBLIC_ID = "portfolio/documents/cv-fr";
-export const CV_EN_PUBLIC_ID = "portfolio/documents/cv-en";
+export const CV_FR_PUBLIC_ID = "cv-fr";
+export const CV_EN_PUBLIC_ID = "cv-en";
 
 export function uploadBuffer(
   buffer: Buffer,
