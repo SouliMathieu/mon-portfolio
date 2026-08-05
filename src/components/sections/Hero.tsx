@@ -15,12 +15,18 @@ type HeroStats = {
   certifications: number;
 };
 
+type CvUrls = {
+  fr: string;
+  en: string;
+};
+
 type HeroProps = {
   locale: string;
   stats: HeroStats;
+  cvUrls: CvUrls;
 };
 
-export default function Hero({ locale, stats }: HeroProps) {
+export default function Hero({ locale, stats, cvUrls }: HeroProps) {
   const t = useTranslations("hero");
   const shouldReduceMotion = useReducedMotion();
 
@@ -39,8 +45,7 @@ export default function Hero({ locale, stats }: HeroProps) {
     },
   ];
 
-  const cvHref =
-    locale === "en" ? "/documents/cv-en.pdf" : "/documents/cv-fr.pdf";
+  const cvHref = locale === "en" ? cvUrls.en : cvUrls.fr;
 
   const container: Variants = {
     hidden: {},

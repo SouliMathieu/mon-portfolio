@@ -2,8 +2,13 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import fs from "fs/promises";
-import path from "path";
+import {
+  cloudinary,
+  uploadBuffer,
+  PHOTO_PUBLIC_ID,
+  CV_FR_PUBLIC_ID,
+  CV_EN_PUBLIC_ID,
+} from "@/lib/cloudinary";
 
 export async function updateAboutContent(formData: FormData) {
   const titleFr = (formData.get("titleFr") as string)?.trim() ?? "";
@@ -31,41 +36,43 @@ export async function updateAboutContent(formData: FormData) {
   let photoUrl: string | null = existing?.photoUrl ?? null;
 
   if (removePhoto && photoUrl) {
-    await fs.rm(path.join(process.cwd(), "public", photoUrl), {
-      force: true,
+    await cloudinary.uploader.destroy(PHOTO_PUBLIC_ID, {
+      resource_type: "image",
     });
     photoUrl = null;
   }
 
   if (photoFile && photoFile.size > 0) {
-    if (photoUrl) {
-      await fs.rm(path.join(process.cwd(), "public", photoUrl), {
-        force: true,
-      });
-    }
-
-    const dir = path.join(process.cwd(), "public", "images", "about");
-    await fs.mkdir(dir, { recursive: true });
-    const ext = path.extname(photoFile.name) || ".jpg";
-    const filename = `photo-${Date.now()}${ext}`;
     const buffer = Buffer.from(await photoFile.arrayBuffer());
-    await fs.writeFile(path.join(dir, filename), buffer);
-    photoUrl = `/images/about/${filename}`;
+    const result = await uploadBuffer(buffer, {
+      public_id: PHOTO_PUBLIC_ID,
+      resource_type: "image",
+      overwrite: true,
+      invalidate: true,
+    });
+    photoUrl = result.secure_url;
   }
 
-  // CV : toujours enregistré sous le même nom de fichier, pour que le lien
-  // du bouton "Télécharger CV" sur le Hero ne change jamais.
-  const documentsDir = path.join(process.cwd(), "public", "documents");
-  await fs.mkdir(documentsDir, { recursive: true });
-
+  // CV : même public_id à chaque upload (overwrite), donc l'URL publique
+  // (sans version, cf. getCvUrls dans lib/cloudinary.ts) reste identique.
   if (cvFr && cvFr.size > 0) {
     const buffer = Buffer.from(await cvFr.arrayBuffer());
-    await fs.writeFile(path.join(documentsDir, "cv-fr.pdf"), buffer);
+    await uploadBuffer(buffer, {
+      public_id: CV_FR_PUBLIC_ID,
+      resource_type: "image",
+      overwrite: true,
+      invalidate: true,
+    });
   }
 
   if (cvEn && cvEn.size > 0) {
     const buffer = Buffer.from(await cvEn.arrayBuffer());
-    await fs.writeFile(path.join(documentsDir, "cv-en.pdf"), buffer);
+    await uploadBuffer(buffer, {
+      public_id: CV_EN_PUBLIC_ID,
+      resource_type: "image",
+      overwrite: true,
+      invalidate: true,
+    });
   }
 
   const data = {

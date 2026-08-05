@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getCvUrls } from "@/lib/cloudinary";
 import Hero from "@/components/sections/Hero";
 import NebulaBackground from "@/components/sections/NebulaBackground";
 import GlobeLoader from "@/components/sections/GlobeLoader";
@@ -18,6 +19,8 @@ export default async function Home({
       prisma.certification.count(),
     ]);
 
+  const cvUrls = getCvUrls();
+
   return (
     <main className="relative min-h-[calc(100vh-5rem)] overflow-hidden flex items-center">
       <NebulaBackground />
@@ -32,6 +35,7 @@ export default async function Home({
             technologies: technologiesCount,
             certifications: certificationsCount,
           }}
+          cvUrls={cvUrls}
         />
         <div className="hidden lg:block relative flex-shrink-0 pr-12">
           <GlobeLoader />

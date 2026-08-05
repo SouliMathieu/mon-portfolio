@@ -1,78 +1,83 @@
 {
   "nav": {
-    "home": "Home",
-    "about": "About",
-    "skills": "Skills",
-    "projects": "Projects"
+    "home": "Accueil",
+    "about": "À propos",
+    "skills": "Compétences",
+    "projects": "Projets"
   },
   "hero": {
     "name": "Mathieu Souli",
-    "role": "Geoinformation Engineer — GeoAI & Spatial Data",
-    "tagline": "I turn satellite data into decisions.",
-    "description": "Geoinformation engineer specialized in remote sensing, GIS, and GeoAI, I build full-stack solutions that leverage spatial data at scale — from satellite imagery analysis to production-ready web, mobile, and desktop applications.",
-    "cta_projects": "View my projects",
-    "cta_cv": "View CV",
+    "role": "Ingénieur en Géoinformation — GeoAI & Data Spatiale",
+    "tagline": "Je transforme la donnée satellite en décisions.",
+    "description": "Ingénieur en Géoinformation spécialisé en télédétection, SIG et GeoAI, je développe des solutions full stack qui exploitent la donnée spatiale à grande échelle. De l'analyse d'imagerie satellite à la mise en production d'applications web, mobiles et desktop.",
+    "cta_projects": "Voir mes projets",
+    "cta_cv": "Voir mon CV",
     "stats": {
-      "projects": "Projects completed",
+      "projects": "Projets réalisés",
       "hackathons": "Hackathons",
       "technologies": "Technologies",
       "certifications": "Certifications"
     },
     "expertise": {
-      "fullstack": "Full Stack Development",
-      "gis": "GIS & Geomatics",
+      "fullstack": "Développement Full Stack",
+      "gis": "Géomatique & SIG",
       "geoai": "GeoAI & Data Science",
-      "satellite": "Satellites & Imagery"
+      "satellite": "Satellites & Imagerie"
     }
   },
   "about": {
-    "title": "About",
-    "bio": "Engineering student in Geoinformation at FST Tangier (Abdelmalek Essaâdi University), I specialize in GeoAI — machine learning and deep learning applied to geospatial data —, spatial Big Data analysis, remote sensing, and the development of location-based web and mobile applications. My path has taken me from cleaning cadastral data with AutoCAD and QGIS at Burkina Faso's Directorate General of Taxes, to building Water Credit AI, a geospatial platform combining Sentinel-2 imagery, NDVI indices, and machine learning, presented at the UNESCO Water4Future Hackathon. I'm currently looking for a 2-month final-year internship to apply these skills to projects with real territorial or environmental impact.",
+    "title": "À propos",
+    "bio": "Étudiant ingénieur en Géoinformation à la FST de Tanger (Université Abdelmalek Essaâdi), je me spécialise dans la Géo IA — Machine Learning et Deep Learning appliqués aux données géospatiales —, l'analyse Big Data spatial, la télédétection et le développement d'applications web et mobiles géolocalisées. Mon parcours m'a mené du nettoyage de données cadastrales sous AutoCAD et QGIS à la Direction Générale des Impôts du Burkina Faso, jusqu'au développement de Water Credit AI, une plateforme géospatiale combinant imagerie Sentinel-2, indices NDVI et machine learning, présentée lors du Hackathon UNESCO Water4Future. Je recherche aujourd'hui un stage PFA de 2 mois pour mettre ces compétences au service de projets à fort impact territorial ou environnemental.",
     "highlights": [
       {
-        "title": "Engineering Degree — Geoinformation",
-        "period": "FST Tangier, 2025-Present",
-        "description": "GIS, Remote Sensing, GeoAI, Spatial Big Data, PostGIS"
+        "title": "Cycle Ingénieur — Géoinformation",
+        "period": "FST Tanger, 2025-Présent",
+        "description": "SIG, Télédétection, Géo IA, Big Data Spatial, PostGIS"
       },
       {
-        "title": "Water Credit AI — UNESCO Water4Future Hackathon",
-        "period": "February 2026",
-        "description": "Geospatial platform using NDVI/Sentinel-2 and ML for agricultural recommendations, built in 48h"
+        "title": "Water Credit AI — Hackathon UNESCO Water4Future",
+        "period": "Février 2026",
+        "description": "Plateforme géospatiale NDVI/Sentinel-2 et ML pour la recommandation agricole, développée en 48h"
       },
       {
-        "title": "Internship — Cadastre Department, Burkina Faso DGI",
-        "period": "Aug-Sept 2025",
-        "description": "Parcel digitization and vectorization with QGIS, PostGIS data production"
+        "title": "Stage — Service du Cadastre, DGI Burkina Faso",
+        "period": "Août-Sept. 2025",
+        "description": "Digitalisation et vectorisation de parcelles sous QGIS, production de données PostGIS"
       },
       {
-        "title": "Community involvement",
+        "title": "Engagement associatif",
         "period": "2024-2025",
-        "description": "Active member of FST Tangier's Geoinformation Club, Auditor for AEBM Tangier"
+        "description": "Membre actif du Club Géoinformation FST Tanger, Commissaire aux comptes AEBM Tanger"
       }
     ],
     "contact": {
       "title": "Contact",
-      "form_name": "Name",
+      "form_name": "Nom",
       "form_email": "Email",
       "form_message": "Message",
-      "form_submit": "Send",
-      "form_success": "Message sent successfully!",
-      "form_error": "Something went wrong, please try again later."
+      "form_submit": "Envoyer",
+      "form_success": "Message envoyé avec succès !",
+      "form_error": "Une erreur est survenue, réessaie plus tard."
+    },
+    "certifications": {
+      "verify": "Vérifier",
+      "showMore": "Voir plus ({count})",
+      "showLess": "Voir moins"
     }
   },
   "Skills": {
-    "eyebrow": "Technical expertise",
-    "title": "Skills",
-    "subtitle": "Four areas of expertise, from full-stack development to satellite analysis, grounded in hands-on work on real projects."
+    "eyebrow": "Expertise technique",
+    "title": "Compétences",
+    "subtitle": "Quatre domaines d'expertise, du développement full stack à l'analyse satellite, ancrés dans une pratique de terrain sur des projets réels."
   },
   "Projects": {
-  "eyebrow": "Selected work",
-  "title": "Projects",
-  "subtitle": "A selection of projects blending geomatics, artificial intelligence, and full-stack development, from hackathon prototypes to field-ready applications.",
-  "backToProjects": "Back to projects",
-  "viewDemo": "View demo",
-  "viewCode": "View code",
-  "aboutTitle": "About this project",
-  "stackTitle": "Tech stack"
+  "eyebrow": "Travaux réalisés",
+  "title": "Projets",
+  "subtitle": "Une sélection de projets mêlant géomatique, intelligence artificielle et développement full stack, du prototype de hackathon aux applications de terrain.",
+  "backToProjects": "Retour aux projets",
+  "viewDemo": "Voir la démo",
+  "viewCode": "Voir le code",
+  "aboutTitle": "À propos du projet",
+  "stackTitle": "Stack technique"
 }
 }

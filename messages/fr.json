@@ -58,6 +58,11 @@
       "form_submit": "Envoyer",
       "form_success": "Message envoyé avec succès !",
       "form_error": "Une erreur est survenue, réessaie plus tard."
+    },
+    "certifications": {
+      "verify": "Vérifier",
+      "showMore": "Voir plus ({count})",
+      "showLess": "Voir moins"
     }
   },
   "Skills": {
