@@ -3,31 +3,43 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import fs from "fs/promises";
-import path from "path";
+import { cloudinary, uploadBuffer } from "@/lib/cloudinary";
 
 async function saveImages(files: File[], slug: string, startOrder: number) {
   const validFiles = files.filter((f) => f && f.size > 0);
   if (validFiles.length === 0) return [];
 
-  const dir = path.join(process.cwd(), "public", "images", "projects", slug);
-  await fs.mkdir(dir, { recursive: true });
-
   const created: { url: string; order: number }[] = [];
 
   for (let i = 0; i < validFiles.length; i++) {
     const file = validFiles[i];
-    const ext = path.extname(file.name) || ".jpg";
-    const filename = `${Date.now()}-${i}${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    await fs.writeFile(path.join(dir, filename), buffer);
-    created.push({
-      url: `/images/projects/${slug}/${filename}`,
-      order: startOrder + i,
+    const result = await uploadBuffer(buffer, {
+      folder: `portfolio/projects/${slug}`,
+      resource_type: "image",
     });
+    created.push({ url: result.secure_url, order: startOrder + i });
   }
 
   return created;
+}
+
+// Même logique que pour les certifications : on extrait le public_id à
+// partir de l'URL Cloudinary standard (.../upload/v<version>/<public_id>.<ext>)
+// pour pouvoir supprimer le fichier correspondant.
+function publicIdFromCloudinaryUrl(url: string): string | null {
+  const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z0-9]+$/);
+  return match ? match[1] : null;
+}
+
+async function removeCloudinaryImage(url: string) {
+  const publicId = publicIdFromCloudinaryUrl(url);
+  if (!publicId) return;
+  try {
+    await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+  } catch {
+    // Le fichier n'existe déjà plus, rien à faire.
+  }
 }
 
 function getTextFields(formData: FormData) {
@@ -89,16 +101,15 @@ export async function updateProject(id: number, formData: FormData) {
     (formData.get("imageOrderIds") as string) || "[]"
   );
 
-  // 1. Supprimer les images retirées (fichier + entrée en base)
+  // 1. Supprimer les images retirées (Cloudinary + entrée en base)
   if (deleteImageIds.length > 0) {
     const imagesToDelete = await prisma.projectImage.findMany({
       where: { id: { in: deleteImageIds } },
     });
 
-    for (const img of imagesToDelete) {
-      const filePath = path.join(process.cwd(), "public", img.url);
-      await fs.rm(filePath, { force: true });
-    }
+    await Promise.all(
+      imagesToDelete.map((img) => removeCloudinaryImage(img.url))
+    );
 
     await prisma.projectImage.deleteMany({
       where: { id: { in: deleteImageIds } },
@@ -151,18 +162,13 @@ export async function updateProject(id: number, formData: FormData) {
 export async function deleteProject(id: number, slug: string) {
   await prisma.project.delete({ where: { id } });
 
-  const projectDir = path.join(
-    process.cwd(),
-    "public",
-    "images",
-    "projects",
-    slug
-  );
-
   try {
-    await fs.rm(projectDir, { recursive: true, force: true });
+    await cloudinary.api.delete_resources_by_prefix(
+      `portfolio/projects/${slug}`,
+      { resource_type: "image" }
+    );
   } catch {
-    // Le dossier n'existe déjà plus, rien à faire.
+    // Dossier déjà vide ou inexistant côté Cloudinary, rien à faire.
   }
 
   revalidatePath("/admin/projects");
