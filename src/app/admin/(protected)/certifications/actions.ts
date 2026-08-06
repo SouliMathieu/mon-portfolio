@@ -3,8 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import fs from "fs/promises";
-import path from "path";
+import { cloudinary, uploadBuffer } from "@/lib/cloudinary";
 
 function getFields(formData: FormData) {
   return {
@@ -23,28 +22,32 @@ function revalidateCertificationPaths() {
 }
 
 async function saveCertificationFile(file: File): Promise<string> {
-  const dir = path.join(
-    process.cwd(),
-    "public",
-    "documents",
-    "certifications"
-  );
-  await fs.mkdir(dir, { recursive: true });
-  const ext = path.extname(file.name) || "";
-  const filename = `cert-${Date.now()}${ext}`;
   const buffer = Buffer.from(await file.arrayBuffer());
-  await fs.writeFile(path.join(dir, filename), buffer);
-  return `/documents/certifications/${filename}`;
+  const result = await uploadBuffer(buffer, {
+    folder: "portfolio/certifications",
+    resource_type: "image", // Cloudinary traite aussi les PDF comme des "image"
+  });
+  return result.secure_url;
+}
+
+// Les URLs qu'on génère suivent toujours le format Cloudinary standard :
+// .../upload/v<version>/<public_id>.<ext> — on en extrait le public_id
+// pour pouvoir supprimer le fichier correspondant lors d'un remplacement
+// ou d'une suppression.
+function publicIdFromCloudinaryUrl(url: string): string | null {
+  const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z0-9]+$/);
+  return match ? match[1] : null;
 }
 
 async function removeCertificationFile(fileUrl: string | null) {
   if (!fileUrl) return;
+  const publicId = publicIdFromCloudinaryUrl(fileUrl);
+  if (!publicId) return;
   try {
-    await fs.rm(path.join(process.cwd(), "public", fileUrl), {
-      force: true,
-    });
+    await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
   } catch {
-    // Le fichier n'existe déjà plus, rien à faire.
+    // Le fichier n'existe déjà plus (ou ce n'est pas une URL Cloudinary
+    // reconnue, ex. ancien fichier local), rien à faire de plus.
   }
 }
 
