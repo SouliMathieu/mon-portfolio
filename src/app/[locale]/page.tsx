@@ -21,6 +21,19 @@ export default async function Home({
 
   const cvUrls = getCvUrls();
 
+  const heroContent = await prisma.heroContent.findFirst();
+  const heroTextProps = heroContent
+    ? {
+        role: locale === "en" ? heroContent.roleEn : heroContent.roleFr,
+        tagline:
+          locale === "en" ? heroContent.taglineEn : heroContent.taglineFr,
+        description:
+          locale === "en"
+            ? heroContent.descriptionEn
+            : heroContent.descriptionFr,
+      }
+    : {};
+
   return (
     <main className="relative min-h-[calc(100vh-5rem)] overflow-hidden flex items-center">
       <NebulaBackground />
@@ -36,6 +49,7 @@ export default async function Home({
             certifications: certificationsCount,
           }}
           cvUrls={cvUrls}
+          {...heroTextProps}
         />
         <div className="hidden lg:block relative flex-shrink-0 pr-12">
           <GlobeLoader />

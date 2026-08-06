@@ -24,11 +24,25 @@ type HeroProps = {
   locale: string;
   stats: HeroStats;
   cvUrls: CvUrls;
+  role?: string;
+  tagline?: string;
+  description?: string;
 };
 
-export default function Hero({ locale, stats, cvUrls }: HeroProps) {
+export default function Hero({
+  locale,
+  stats,
+  cvUrls,
+  role,
+  tagline,
+  description,
+}: HeroProps) {
   const t = useTranslations("hero");
   const shouldReduceMotion = useReducedMotion();
+
+  const resolvedTagline = tagline || t("tagline");
+  const resolvedRole = role || t("role");
+  const resolvedDescription = description || t("description");
 
   const statsDisplay = [
     { value: stats.projects, suffix: "+", label: t("stats.projects") },
@@ -77,7 +91,7 @@ export default function Hero({ locale, stats, cvUrls }: HeroProps) {
         animate="show"
       >
         <motion.p variants={item} className="font-mono text-sm text-ndvi mb-4">
-          {t("tagline")}
+          {resolvedTagline}
         </motion.p>
 
         <motion.h1
@@ -88,14 +102,14 @@ export default function Hero({ locale, stats, cvUrls }: HeroProps) {
         </motion.h1>
 
         <motion.p variants={item} className="text-lg text-offwhite/70 mb-6">
-          {t("role")}
+          {resolvedRole}
         </motion.p>
 
         <motion.p
           variants={item}
           className="text-offwhite/80 mb-10 leading-relaxed"
         >
-          {t("description")}
+          {resolvedDescription}
         </motion.p>
 
         <motion.div variants={item} className="flex flex-wrap gap-4 mb-14">

@@ -76,6 +76,17 @@ model AboutContent {
   titleEn       String   @default("")
 }
 
+model HeroContent {
+  id            Int      @id @default(autoincrement())
+  roleFr        String
+  roleEn        String
+  taglineFr     String
+  taglineEn     String
+  descriptionFr String   @db.Text
+  descriptionEn String   @db.Text
+  updatedAt     DateTime @updatedAt
+}
+
 model ContactMessage {
   id        Int      @id @default(autoincrement())
   name      String
