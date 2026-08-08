@@ -30,7 +30,7 @@ export default function ProjectCard({ project, locale }: Props) {
             src={project.coverUrl}
             alt={project.coverAlt || project.title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-contain transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 400px"
           />
         ) : (

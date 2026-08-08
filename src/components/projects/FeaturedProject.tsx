@@ -29,18 +29,22 @@ export default function FeaturedProject({ project, locale }: Props) {
 
   return (
     <div className="grid overflow-hidden rounded-3xl border border-[#4DFFA0]/20 bg-white/5 backdrop-blur-xl md:grid-cols-2">
-      <div className="relative aspect-[16/10] md:aspect-auto">
+      {/* Hauteur minimale plutôt qu'un ratio figé sur desktop, et
+          object-contain plutôt que cover : marche pour un screenshot
+          mobile en portrait comme pour une capture desktop en paysage,
+          sans jamais rogner l'image. */}
+      <div className="relative aspect-[16/10] min-h-[280px] bg-[#0F1720] md:aspect-auto md:min-h-[480px]">
         {project.coverUrl ? (
           <Image
             src={project.coverUrl}
             alt={project.coverAlt || project.title}
             fill
-            className="object-cover"
+            className="object-contain"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
           />
         ) : (
-          <div className="flex h-full min-h-64 items-center justify-center bg-[#0F1720] text-[#F4F6F8]/20">
+          <div className="flex h-full items-center justify-center text-[#F4F6F8]/20">
             <span className="font-mono text-xs">{noSignal}</span>
           </div>
         )}
