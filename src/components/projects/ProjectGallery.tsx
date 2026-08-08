@@ -24,12 +24,15 @@ export default function ProjectGallery({ images, locale }: Props) {
 
   return (
     <div>
-      <div className="relative aspect-video overflow-hidden rounded-3xl border border-white/10 bg-[#0F1720]">
+      {/* Hauteur fixe plutôt qu'un ratio figé : marche pour un
+          screenshot mobile en portrait comme pour une capture desktop
+          en paysage, sans jamais rogner l'image (object-contain). */}
+      <div className="relative h-[420px] md:h-[560px] overflow-hidden rounded-3xl border border-white/10 bg-[#0F1720]">
         <Image
           src={images[active].url}
           alt={images[active].alt}
           fill
-          className="object-cover"
+          className="object-contain"
           sizes="(max-width: 768px) 100vw, 900px"
           priority
         />
@@ -43,11 +46,11 @@ export default function ProjectGallery({ images, locale }: Props) {
               onClick={() => setActive(i)}
               aria-label={`${locale === 'fr' ? 'Image' : 'Image'} ${i + 1}`}
               aria-pressed={i === active}
-              className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-xl border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4DFFA0]/50 ${
+              className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-xl border bg-[#0F1720] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4DFFA0]/50 ${
                 i === active ? 'border-[#4DFFA0]' : 'border-white/10 hover:border-white/25'
               }`}
             >
-              <Image src={img.url} alt="" fill className="object-cover" sizes="96px" />
+              <Image src={img.url} alt="" fill className="object-contain" sizes="96px" />
             </button>
           ))}
         </div>
